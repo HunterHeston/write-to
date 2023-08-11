@@ -1,13 +1,9 @@
 import ReactMarkdown from "react-markdown";
-import { GetStaticProps, GetStaticPaths } from "next";
+import type { GetStaticProps, GetStaticPaths } from "next";
 
 type Article = {
   title: string;
   content: string;
-};
-
-type Profile = {
-  name: string;
 };
 
 type Props = {
@@ -23,7 +19,7 @@ export default function ArticlePage({ article }: Props) {
   );
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = () => {
   // Replace this with your own implementation to fetch the article slugs
   const articleSlugs = ["stub-article-slug-1", "stub-article-slug-2"];
 
@@ -34,7 +30,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return { paths, fallback: false };
 };
 
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<Props> = ({ params }) => {
   // Replace this with your own implementation to fetch the article content
   const article = {
     title: "Stub Article Title",

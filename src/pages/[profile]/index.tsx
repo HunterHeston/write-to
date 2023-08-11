@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { GetStaticPaths, GetStaticProps } from "next";
+import type { GetStaticPaths, GetStaticProps } from "next";
 
 interface ProfileProps {
   profile: string;
@@ -15,7 +15,7 @@ export default function Profile({ profile }: ProfileProps) {
   return <div>Profile for {profile}</div>;
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = () => {
   // Fetch profiles from an API or database
   const profiles = ["john", "jane", "doe"];
 
@@ -27,9 +27,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return { paths, fallback: true };
 };
 
-export const getStaticProps: GetStaticProps<ProfileProps> = async ({
-  params,
-}) => {
+export const getStaticProps: GetStaticProps<ProfileProps> = ({ params }) => {
   // Fetch profile data from an API or database
   const profile = params?.profile as string;
 
