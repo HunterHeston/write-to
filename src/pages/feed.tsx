@@ -1,6 +1,5 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
 
 type PostMeta = {
@@ -11,10 +10,12 @@ type PostMeta = {
 };
 
 export default function Feed() {
-  const { data, status, update } = useSession();
+  const { data, status } = useSession();
   const [feed, setFeed] = useState<PostMeta[]>([]);
 
-  getUserFeed().then((feed) => setFeed(feed));
+  getUserFeed()
+    .then((feed) => setFeed(feed))
+    .catch(console.error);
 
   if (status === "loading") {
     return <div>Loading...</div>;
@@ -24,7 +25,7 @@ export default function Feed() {
     return (
       <>
         <div>Your feed would go here!</div>
-        <div>But you're not logged in, so you can't see it.</div>
+        <div>But you&apos;re not logged in, so you can&apos;t see it.</div>
         <div>
           Head to the <Link href="/login">login</Link> page or{" "}
           <Link href="/signup">sign up</Link> to start building your feed!
@@ -78,7 +79,7 @@ async function getUserFeed() {
     },
   ];
 
-  const p = new Promise<PostMeta[]>((res, rej) => {
+  const p = new Promise<PostMeta[]>((res, _) => {
     res(fakePosts);
   });
   return p;
