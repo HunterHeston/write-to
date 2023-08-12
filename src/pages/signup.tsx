@@ -1,3 +1,6 @@
+/**
+ * This is simply the login page and there is nothing extra ordinary about it.
+ */
 import { useState } from "react";
 
 export default function SignUp() {

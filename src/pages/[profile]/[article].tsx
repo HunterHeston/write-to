@@ -1,3 +1,13 @@
+/**
+ * This is the article page. It is used to display a single article.
+ * Currently rendered at /:profile/:article.
+ *
+ * All articles are rendered at build time using getStaticProps and getStaticPaths.
+ * At run time if there is no static article we will query and generate the static article.
+ *
+ * This is the route and component where people will spend their time reading.
+ */
+
 import ReactMarkdown from "react-markdown";
 import type { GetStaticProps, GetStaticPaths } from "next";
 

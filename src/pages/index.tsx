@@ -1,3 +1,12 @@
+/**
+ * This is the homepage of the entire application.
+ *
+ * It's main purposes are:
+ * 1. To encourage people to create an account and start writing.
+ * 2. To encourage people to share their link.
+ * 3. Give users a sense of the purpose of the application.
+ */
+
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import { api } from "@/utils/api";

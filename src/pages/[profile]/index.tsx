@@ -1,3 +1,11 @@
+/**
+ * The main profile page for any individual author.
+ *
+ * It's main purposes are to:
+ * 1. Display the basic available information about an author. Username, About, etc.
+ * 2. Display a reverse chronological list of all posts by the author.
+ */
+
 import { useRouter } from "next/router";
 import type { GetStaticPaths, GetStaticProps } from "next";
 
