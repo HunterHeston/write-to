@@ -33,7 +33,7 @@ export default function ArticlePage({ article }: Props) {
 
 export const getStaticPaths: GetStaticPaths = () => {
   // Replace this with your own implementation to fetch the article slugs
-  const articleSlugs = ["one", "two"];
+  const articleSlugs = ["one", "two", "three"];
 
   const paths = articleSlugs.map((slug) => ({
     params: { profile: "jane", article: slug },
