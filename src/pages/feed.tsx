@@ -57,23 +57,23 @@ export default function Feed() {
   );
 }
 
-async function getUserFeed() {
+async function getUserFeed(author: string = "jane") {
   const fakePosts: PostMeta[] = [
     {
       slug: "one",
-      author: "jane",
+      author: author,
       title: "My first post",
       publishDate: "2021-01-01",
     },
     {
       slug: "two",
-      author: "jane",
+      author: author,
       title: "My second post",
       publishDate: "2021-01-02",
     },
     {
       slug: "three",
-      author: "jane",
+      author: author,
       title: "My third post",
       publishDate: "2021-01-03",
     },
