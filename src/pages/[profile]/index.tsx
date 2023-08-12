@@ -66,9 +66,7 @@ export const getStaticPaths: GetStaticPaths = () => {
   return { paths, fallback: true };
 };
 
-export const getStaticProps: GetStaticProps<ProfileProps> = async ({
-  params,
-}) => {
+export const getStaticProps: GetStaticProps<ProfileProps> = ({ params }) => {
   // Fetch profile data from an API or database
   const profile = params?.profile as string;
 

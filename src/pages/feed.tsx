@@ -57,7 +57,7 @@ export default function Feed() {
   );
 }
 
-async function getUserFeed(author: string = "jane") {
+async function getUserFeed(author = "jane") {
   const fakePosts: PostMeta[] = [
     {
       slug: "one",
