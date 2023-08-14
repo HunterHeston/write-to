@@ -8,8 +8,6 @@
 
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { getUserFeed } from "@/utils/data/fakeFeed";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import type { PostMeta } from "@/types/post";
 import { prisma } from "@/server/db";
