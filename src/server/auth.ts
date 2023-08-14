@@ -61,6 +61,60 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  events: {
+    createUser(message) {
+      prisma.profile
+        .create({
+          data: {
+            name: message.user.name ?? "",
+            user: {
+              connect: {
+                id: message.user.id,
+              },
+            },
+          },
+        })
+        .then(() => {
+          console.log("Created profile for user: ", message.user.id);
+        })
+        .catch((err) => {
+          console.error(
+            `Error creating profile for user ${message.user.id} `,
+            err
+          );
+        });
+    },
+    async signIn(message) {
+      const userProfile = await prisma.profile.findUnique({
+        where: {
+          userId: message.user.id,
+        },
+      });
+
+      if (!userProfile) {
+        prisma.profile
+          .create({
+            data: {
+              name: message.user.name ?? "",
+              user: {
+                connect: {
+                  id: message.user.id,
+                },
+              },
+            },
+          })
+          .then(() => {
+            console.log("Created profile for user: ", message.user.id);
+          })
+          .catch((err) => {
+            console.error(
+              `Error creating profile for user ${message.user.id} `,
+              err
+            );
+          });
+      }
+    },
+  },
 };
 
 /**
