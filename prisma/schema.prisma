@@ -74,7 +74,6 @@ model VerificationToken {
 ////////////////////////
 enum PostVisibility {
   PUBLIC
-  FOLLOWERS
   APPROVED_FOLLOWERS
   PRIVATE
 }

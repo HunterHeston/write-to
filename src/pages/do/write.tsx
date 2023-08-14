@@ -7,8 +7,9 @@
  * 3. Allow users to publish their posts with a selected visibility: All, Approved, None.
  */
 
-import { Visibility } from "@/types/post";
-import { useState } from "react";
+import { api } from "@/utils/api";
+import { PostVisibility } from "@prisma/client";
+import { ReactEventHandler, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 /**
@@ -16,8 +17,17 @@ import ReactMarkdown from "react-markdown";
  */
 export default function Write() {
   const [title, setTitle] = useState("");
-  const [text, setText] = useState("");
-  const [visibility, setVisibility] = useState<Visibility>(Visibility.All);
+  const [content, setContent] = useState("");
+  const [visibility, setVisibility] = useState<PostVisibility>(
+    PostVisibility.PRIVATE
+  );
+
+  const { mutate, error } = api.posts.createPost.useMutation();
+
+  const onSend = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    mutate({ title, content, visibility });
+  };
 
   return (
     <div className="flex flex-col">
@@ -28,27 +38,24 @@ export default function Write() {
         onChange={(e) => setTitle(e.target.value)}
       ></input>
       <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
       ></textarea>
-      <ReactMarkdown>{text}</ReactMarkdown>
-      <select onChange={(e) => setVisibility(e.target.value as Visibility)}>
-        <option value={Visibility.All}>{Visibility.All}</option>
-        <option value={Visibility.Approved}>{Visibility.Approved}</option>
-        <option value={Visibility.JustMe}>{Visibility.JustMe}</option>
-        <option value={Visibility.IntoTheEther}>
-          {Visibility.IntoTheEther}
-        </option>
-      </select>
-      <button onClick={() => onSend(title, text, visibility)}>Sent it</button>
+      <ReactMarkdown>{content}</ReactMarkdown>
+      <form onSubmit={onSend}>
+        <select
+          value={visibility}
+          onChange={(e) => setVisibility(e.target.value as PostVisibility)}
+        >
+          <option value={PostVisibility.PRIVATE}>Private</option>
+          <option value={PostVisibility.APPROVED_FOLLOWERS}>
+            Approved Followers
+          </option>
+          <option value={PostVisibility.PUBLIC}>Anyone!</option>
+        </select>
+        <button type="submit">Sent it</button>
+      </form>
+      {error && <p>{error.message}</p>}
     </div>
-  );
-}
-
-function onSend(title: string, text: string, visibility: string) {
-  console.log(
-    `title: ${title}
-text: ${text}
-visibility: ${visibility}`
   );
 }
