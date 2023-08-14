@@ -6,12 +6,12 @@
  * 2. Display a reverse chronological list of all posts by the author.
  */
 
-import { useRouter } from "next/router";
-import type { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
-import type { PostMeta } from "@/types/post";
 import { getUserFeed } from "@/utils/data/fakeFeed";
+import type { GetStaticPaths, GetStaticProps } from "next";
+import type { PostMeta } from "@/types/post";
 
 interface ProfileProps {
   profile: string;
