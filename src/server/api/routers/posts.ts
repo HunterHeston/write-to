@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { PostVisibility } from "@prisma/client";
+import { prisma } from "@/server/db";
 
 export const postRouter = createTRPCRouter({
   createPost: protectedProcedure
@@ -11,8 +12,27 @@ export const postRouter = createTRPCRouter({
         visibility: z.nativeEnum(PostVisibility),
       })
     )
-    .mutation(({ input }) => {
-      return input;
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session.user.id;
+
+      try {
+        const post = await prisma.post.create({
+          data: {
+            title: input.title,
+            content: input.content,
+            visibility: input.visibility,
+            profile: {
+              connect: {
+                userId: userId,
+              },
+            },
+          },
+        });
+
+        console.log("Created post", post);
+      } catch (e) {
+        console.error("Failed to create post: ", e);
+      }
     }),
   // updatePost
   // deletePost
