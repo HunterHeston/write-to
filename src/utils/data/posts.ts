@@ -1,4 +1,4 @@
-import { Post, Visibility } from "@/types/post";
+import { type Post, Visibility } from "@/types/post";
 
 const content = `
 # Stub Article Content

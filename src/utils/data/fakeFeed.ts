@@ -1,4 +1,4 @@
-import { PostMeta } from "@/types/post";
+import type { PostMeta } from "@/types/post";
 
 export async function getUserFeed(author: string) {
   const fakePosts: PostMeta[] = [

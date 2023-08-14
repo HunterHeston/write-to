@@ -1,4 +1,4 @@
-import { PostMeta } from "@/types/post";
+import type { PostMeta } from "@/types/post";
 import { getUserFeed } from "@/utils/data/fakeFeed";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -25,7 +25,7 @@ export default function Feed() {
     );
   }
 
-  getUserFeed(data?.user.name || "")
+  getUserFeed(data?.user.name ?? "")
     .then((feed) => setFeed(feed))
     .catch(console.error);
 

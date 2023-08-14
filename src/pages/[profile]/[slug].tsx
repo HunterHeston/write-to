@@ -70,9 +70,9 @@ export const getStaticProps: GetStaticProps<
   const post = posts?.find((post) => post.meta.slug === slug);
 
   const article = {
-    title: post?.meta.title || "No title",
-    content: post?.content || "No content",
-    publishDate: post?.meta.publishDate || "No publish date",
+    title: post?.meta.title ?? "No title",
+    content: post?.content ?? "No content",
+    publishDate: post?.meta.publishDate ?? "No publish date",
   };
 
   return { props: { article } };
