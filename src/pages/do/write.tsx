@@ -9,7 +9,7 @@
 
 import { api } from "@/utils/api";
 import { PostVisibility } from "@prisma/client";
-import { ReactEventHandler, useState } from "react";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 /**
