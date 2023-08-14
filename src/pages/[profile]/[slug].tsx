@@ -10,6 +10,7 @@
 
 import ReactMarkdown from "react-markdown";
 import type { GetStaticProps, GetStaticPaths } from "next";
+import { fakePostMap } from "@/utils/data/posts";
 
 type Article = {
   title: string;
@@ -31,41 +32,47 @@ export default function ArticlePage({ article }: Props) {
   );
 }
 
+type Params = {
+  params: {
+    profile: string;
+    slug: string;
+  };
+};
+
 export const getStaticPaths: GetStaticPaths = () => {
   // Replace this with your own implementation to fetch the article slugs
-  const articleSlugs = ["one", "two", "three"];
 
-  const paths = articleSlugs.map((slug) => ({
-    params: { profile: "jane", article: slug },
-  }));
+  const paths: Params[] = [];
+
+  for (const user of Object.keys(fakePostMap)) {
+    const posts = fakePostMap[user];
+    if (posts) {
+      for (const post of posts) {
+        paths.push({
+          params: { profile: post.meta.author, slug: post.meta.slug },
+        });
+      }
+    }
+  }
 
   return { paths, fallback: false };
 };
 
-export const getStaticProps: GetStaticProps<Props> = ({ params }) => {
-  // Replace this with your own implementation to fetch the article content
+export const getStaticProps: GetStaticProps<
+  Props,
+  { profile: string; slug: string }
+> = ({ params }) => {
+  if (!params) throw new Error("No params");
+
+  const { profile, slug } = params;
+
+  const posts = fakePostMap[profile];
+  const post = posts?.find((post) => post.meta.slug === slug);
+
   const article = {
-    title: "Stub Article Title",
-    content: `
-# Stub Article Content
-This is some stub content for the article.
-
-## Subheading
-This is a subheading containing some **bold** text.
-
-### Subsubheading
-This is a subsubheading containing some *italic* text.
-
-#### Subsubsubheading
-This is a subsubsubheading containing some ~~strikethrough~~ text.
-
-##### Subsubsubsubheading
-This is a subsubsubsubheading containing some \`inline code\`.
-
-###### Subsubsubsubsubheading
-This is a subsubsubsubsubheading containing some [link text](https://example.com).
-    `,
-    publishDate: new Date().toDateString(),
+    title: post?.meta.title || "No title",
+    content: post?.content || "No content",
+    publishDate: post?.meta.publishDate || "No publish date",
   };
 
   return { props: { article } };
