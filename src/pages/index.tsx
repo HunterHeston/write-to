@@ -17,6 +17,15 @@ export default function Home() {
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
             Write<span className="text-[hsl(280,100%,70%)]">To</span>
           </h1>
+          <p>Write to the people you care about, not the entire planet.</p>
+          <p>
+            If you're looking for hot takes and viral content. You're in the
+            wrong place.
+          </p>
+          <p>
+            This is about sharing your important or trivial things with the
+            people you care about, even if it's just you.
+          </p>
           <div className="flex flex-col items-center gap-2">
             <AuthShowcase />
           </div>
