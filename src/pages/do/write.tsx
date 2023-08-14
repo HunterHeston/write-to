@@ -7,15 +7,9 @@
  * 3. Allow users to publish their posts with a selected visibility: All, Approved, None.
  */
 
+import { Visibility } from "@/types/post";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-
-enum Visibility {
-  All = "All",
-  Approved = "Approved",
-  JustMe = "Just Me",
-  IntoTheEther = "Into the ether",
-}
 
 /**
  * This is the page where users write their posts.

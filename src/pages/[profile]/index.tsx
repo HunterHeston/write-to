@@ -10,18 +10,12 @@ import { useRouter } from "next/router";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
 import { useState } from "react";
+import { PostMeta } from "@/types/post";
+import { getUserFeed } from "@/utils/data/fakeFeed";
 
 interface ProfileProps {
   profile: string;
 }
-
-type PostMeta = {
-  slug: string;
-  author: string;
-  title: string;
-  publishDate: string;
-  visibility: string;
-};
 
 export default function Profile({ profile }: ProfileProps) {
   const router = useRouter();
@@ -72,35 +66,3 @@ export const getStaticProps: GetStaticProps<ProfileProps> = ({ params }) => {
 
   return { props: { profile } };
 };
-
-// Fake fetching of the users posts
-async function getUserFeed(author: string) {
-  const fakePosts: PostMeta[] = [
-    {
-      slug: "one",
-      author: author,
-      title: "My first post",
-      publishDate: "2021-01-01",
-      visibility: "All",
-    },
-    {
-      slug: "two",
-      author: author,
-      title: "My second post",
-      publishDate: "2021-01-02",
-      visibility: "Just Me",
-    },
-    {
-      slug: "three",
-      author: author,
-      title: "My third post",
-      publishDate: "2021-01-03",
-      visibility: "Approved",
-    },
-  ];
-
-  const p = new Promise<PostMeta[]>((res, _) => {
-    res(fakePosts);
-  });
-  return p;
-}

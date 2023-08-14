@@ -1,21 +1,12 @@
+import { PostMeta } from "@/types/post";
+import { getUserFeed } from "@/utils/data/fakeFeed";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 
-type PostMeta = {
-  slug: string;
-  author: string;
-  title: string;
-  publishDate: string;
-};
-
 export default function Feed() {
   const { data, status } = useSession();
   const [feed, setFeed] = useState<PostMeta[]>([]);
-
-  getUserFeed()
-    .then((feed) => setFeed(feed))
-    .catch(console.error);
 
   if (status === "loading") {
     return <div>Loading...</div>;
@@ -33,6 +24,10 @@ export default function Feed() {
       </>
     );
   }
+
+  getUserFeed(data?.user.name || "")
+    .then((feed) => setFeed(feed))
+    .catch(console.error);
 
   return (
     <div>
@@ -55,32 +50,4 @@ export default function Feed() {
       </div>
     </div>
   );
-}
-
-async function getUserFeed(author = "jane") {
-  const fakePosts: PostMeta[] = [
-    {
-      slug: "one",
-      author: author,
-      title: "My first post",
-      publishDate: "2021-01-01",
-    },
-    {
-      slug: "two",
-      author: author,
-      title: "My second post",
-      publishDate: "2021-01-02",
-    },
-    {
-      slug: "three",
-      author: author,
-      title: "My third post",
-      publishDate: "2021-01-03",
-    },
-  ];
-
-  const p = new Promise<PostMeta[]>((res, _) => {
-    res(fakePosts);
-  });
-  return p;
 }
