@@ -19,12 +19,12 @@ export default function Home() {
           </h1>
           <p>Write to the people you care about, not the entire planet.</p>
           <p>
-            If you're looking for hot takes and viral content. You're in the
-            wrong place.
+            If you&apos;re looking for hot takes and viral content. You&apos;re
+            in the wrong place.
           </p>
           <p>
             This is about sharing your important or trivial things with the
-            people you care about, even if it's just you.
+            people you care about, even if it&apos;s just you.
           </p>
           <div className="flex flex-col items-center gap-2">
             <AuthShowcase />
