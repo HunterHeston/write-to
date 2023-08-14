@@ -21,7 +21,9 @@ model Example {
   updatedAt DateTime @updatedAt
 }
 
-// Necessary for Next auth
+////////////////////////
+// NextAuth.js Models
+////////////////////////
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -56,6 +58,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  Profile       Profile?
 }
 
 model VerificationToken {
@@ -64,4 +67,66 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+////////////////////////
+// Application models
+////////////////////////
+enum PostVisibility {
+  PUBLIC
+  FOLLOWERS
+  APPROVED_FOLLOWERS
+  PRIVATE
+}
+
+model Post {
+  id         String         @id @default(cuid())
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  title      String
+  content    String
+  visibility PostVisibility @default(PRIVATE)
+
+  // the profile that made this post
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bio       String?
+
+  // the next-auth user this profile is associated with
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  // all the post a user has made
+  Post Post[]
+
+  // Followers and Following of this profile.
+  followedBy ProfileFollower[] @relation("FollowerRel")
+  following  ProfileFollower[] @relation("FollowingRel")
+}
+
+model ProfileFollower {
+  id        String         @id @default(cuid())
+  createdAt DateTime       @default(now())
+  status    FollowerStatus @default(REQUESTED)
+
+  // the profile that is being followed
+  followingId String
+  following   Profile @relation("FollowingRel", fields: [followingId], references: [id])
+
+  // the profile that is following
+  followerId String
+  follower   Profile @relation("FollowerRel", fields: [followerId], references: [id])
+}
+
+enum FollowerStatus {
+  REQUESTED
+  FOLLOWING
+  BLOCKED
 }
