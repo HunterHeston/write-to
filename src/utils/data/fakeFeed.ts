@@ -1,24 +1,24 @@
 import type { PostMeta } from "@/types/post";
 
-export async function getUserFeed(author: string) {
+export async function getUserFeed(profile: string) {
   const fakePosts: PostMeta[] = [
     {
       slug: "one",
-      author: author,
+      profile: profile,
       title: "My first post",
       publishDate: "2021-01-01",
       visibility: "All",
     },
     {
       slug: "two",
-      author: author,
+      profile: profile,
       title: "My second post",
       publishDate: "2021-01-02",
       visibility: "Just Me",
     },
     {
       slug: "three",
-      author: author,
+      profile: profile,
       title: "My third post",
       publishDate: "2021-01-03",
       visibility: "Approved",

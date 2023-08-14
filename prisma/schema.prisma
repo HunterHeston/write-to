@@ -83,6 +83,7 @@ model Post {
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
   title      String
+  slug       String
   content    String
   visibility PostVisibility @default(PRIVATE)
 

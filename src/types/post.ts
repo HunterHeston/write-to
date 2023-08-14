@@ -1,9 +1,9 @@
 export type PostMeta = {
   slug: string;
-  author: string;
+  profile: string;
   title: string;
   publishDate: string;
-  visibility: string;
+  visibility?: string;
 };
 
 export type Post = {

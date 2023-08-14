@@ -49,7 +49,7 @@ export const getStaticPaths: GetStaticPaths = () => {
     if (posts) {
       for (const post of posts) {
         paths.push({
-          params: { profile: post.meta.author, slug: post.meta.slug },
+          params: { profile: post.meta.profile, slug: post.meta.slug },
         });
       }
     }
