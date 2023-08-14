@@ -7,15 +7,9 @@
  * 3. Give users a sense of the purpose of the application.
  */
 
-import { signIn, signOut, useSession } from "next-auth/react";
-import Head from "next/head";
-import { api } from "@/utils/api";
-import { Button } from "@/components/ui/button";
 import { AuthShowcase } from "@/components/ui/authShowcase";
 
 export default function Home() {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
   return (
     <>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b">
@@ -24,9 +18,6 @@ export default function Home() {
             Write<span className="text-[hsl(280,100%,70%)]">To</span>
           </h1>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl">
-              {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-            </p>
             <AuthShowcase />
           </div>
         </div>
