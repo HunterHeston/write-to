@@ -14,7 +14,7 @@ import { prisma } from "@/server/db";
 import { PostVisibility, Profile } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { FormEventHandler, useState } from "react";
+import { useState } from "react";
 
 interface ProfileProps {
   profileName: string;
@@ -35,8 +35,6 @@ export default function Profile({
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-
-  console.log(data?.user.name, profileName, data?.user.name === profileName);
 
   return (
     <div>
@@ -77,7 +75,7 @@ function EditableBio({
   const [isEditing, setIsEditing] = useState(false);
 
   if (isEditing) {
-    return <BioEditor bio={bio ?? ""} />;
+    return <BioEditor bio={bio ?? ""} setIsEditing={setIsEditing} />;
   }
 
   return (
@@ -92,11 +90,18 @@ function EditableBio({
   );
 }
 
-function BioEditor({ bio = "" }: { bio: string }) {
+function BioEditor({
+  bio = "",
+  setIsEditing,
+}: {
+  bio: string;
+  setIsEditing: (isEditing: boolean) => void;
+}) {
   const [newBio, setNewBio] = useState(bio);
 
   const update = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsEditing(false);
     console.log("Updating bio to: ", newBio);
   };
 
