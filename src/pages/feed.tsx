@@ -41,8 +41,10 @@ export default function Feed() {
         <ul>
           {feed.map((post) => (
             <li key={post.slug} className="mb-4">
-              <Link href={`/${post.profile}/${post.slug}`}>{post.title}</Link>
-              <div>By {post.profile}</div>
+              <Link href={`/${post.profileName}/${post.slug}`}>
+                {post.title}
+              </Link>
+              <div>By {post.profileName}</div>
               <div>Published {post.publishDate}</div>
             </li>
           ))}

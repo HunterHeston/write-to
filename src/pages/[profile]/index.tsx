@@ -11,23 +11,38 @@ import { useRouter } from "next/router";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import type { PostMeta } from "@/types/post";
 import { prisma } from "@/server/db";
-import { PostVisibility } from "@prisma/client";
+import { PostVisibility, Profile } from "@prisma/client";
+import { Edit } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { FormEventHandler, useState } from "react";
 
 interface ProfileProps {
-  profile: string;
+  profileName: string;
+  bio: string | null;
+  dateJoined: string;
   posts?: PostMeta[];
 }
 
-export default function Profile({ profile, posts }: ProfileProps) {
+export default function Profile({
+  profileName,
+  bio,
+  dateJoined,
+  posts,
+}: ProfileProps) {
   const router = useRouter();
+  const { data } = useSession();
 
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
 
+  console.log(data?.user.name, profileName, data?.user.name === profileName);
+
   return (
     <div>
-      <h1>{profile}</h1>
+      <h1>{profileName}</h1>
+      <p>Member since {new Date(dateJoined).toDateString()}</p>
+      <EditableBio bio={bio} canEdit={profileName === data?.user.name} />
       <h2>Posts</h2>
       {!posts ||
         (posts.length === 0 && (
@@ -39,7 +54,9 @@ export default function Profile({ profile, posts }: ProfileProps) {
         <ul>
           {posts.map((post) => (
             <li key={post.slug} className="mb-4">
-              <Link href={`/${post.profile}/${post.slug}`}>{post.title}</Link>
+              <Link href={`/${post.profileName}/${post.slug}`}>
+                {post.title}
+              </Link>
               <div>Published {post.publishDate}</div>
               <div>{post.visibility}</div>
             </li>
@@ -47,6 +64,50 @@ export default function Profile({ profile, posts }: ProfileProps) {
         </ul>
       )}
     </div>
+  );
+}
+
+function EditableBio({
+  bio,
+  canEdit,
+}: {
+  bio: string | null;
+  canEdit: boolean;
+}) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  if (isEditing) {
+    return <BioEditor bio={bio ?? ""} />;
+  }
+
+  return (
+    <div className="flex">
+      <p>About: {bio}</p>
+      {canEdit && (
+        <button onClick={() => setIsEditing(!isEditing)}>
+          <Edit size={24}></Edit>
+        </button>
+      )}
+    </div>
+  );
+}
+
+function BioEditor({ bio = "" }: { bio: string }) {
+  const [newBio, setNewBio] = useState(bio);
+
+  const update = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log("Updating bio to: ", newBio);
+  };
+
+  return (
+    <form onSubmit={(e) => update(e)}>
+      <textarea
+        onChange={(e) => setNewBio(e.target.value)}
+        value={newBio}
+      ></textarea>
+      <button>Save</button>
+    </form>
   );
 }
 
@@ -60,8 +121,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
         name: true,
       },
     });
-
-    console.log("Generating paths for profiles: ", profiles);
 
     // Map the profiles to an array of objects with `params` key
     const paths = profiles.map((profile) => ({
@@ -79,23 +138,23 @@ export const getStaticProps: GetStaticProps<ProfileProps> = async ({
   params,
 }) => {
   // Fetch profile data from an API or database
-  const profile = params?.profile as string;
+  const profileName = params?.profile as string;
 
   try {
-    const user = await prisma.profile.findUnique({
+    const profile = await prisma.profile.findUnique({
       where: {
-        name: profile,
+        name: profileName,
       },
     });
 
-    if (!user) {
+    if (!profile) {
       return { notFound: true };
     }
 
     const posts = await prisma.post.findMany({
       where: {
         profile: {
-          name: profile,
+          name: profileName,
         },
         visibility: PostVisibility.PUBLIC,
       },
@@ -109,11 +168,18 @@ export const getStaticProps: GetStaticProps<ProfileProps> = async ({
     const postMetaData: PostMeta[] = posts.map((post) => ({
       title: post.title,
       publishDate: post.createdAt.toISOString(),
-      profile: profile,
+      profileName: profile.name,
       slug: post.slug,
     }));
 
-    return { props: { profile, posts: postMetaData } };
+    return {
+      props: {
+        profileName: profile.name,
+        bio: profile.bio,
+        dateJoined: profile.createdAt.toISOString(),
+        posts: postMetaData,
+      },
+    };
   } catch (e) {
     console.error("Error fetching profile data: ", e);
     return { notFound: true };

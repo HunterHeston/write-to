@@ -22,7 +22,7 @@
     "@trpc/server": "^10.34.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "lucide-react": "^0.265.0",
+    "lucide-react": "^0.263.1",
     "next": "^13.4.2",
     "next-auth": "^4.22.4",
     "react": "18.2.0",

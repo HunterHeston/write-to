@@ -27,7 +27,7 @@ export const fakePostMap: Record<string, Post[]> = {
     {
       content: content,
       meta: {
-        profile: "hntrh",
+        profileName: "hntrh",
         publishDate: "2021-01-01",
         slug: "my-day-was-this",
         title: "My day was this",
@@ -37,7 +37,7 @@ export const fakePostMap: Record<string, Post[]> = {
     {
       content: content,
       meta: {
-        profile: "hntrh",
+        profileName: "hntrh",
         publishDate: "2021-01-02",
         slug: "its-never-still",
         title: "It's never still",
@@ -47,7 +47,7 @@ export const fakePostMap: Record<string, Post[]> = {
     {
       content: content,
       meta: {
-        profile: "hntrh",
+        profileName: "hntrh",
         publishDate: "2021-01-03",
         slug: "gotta-keep-moving",
         title: "Gotta keep moving",
@@ -59,7 +59,7 @@ export const fakePostMap: Record<string, Post[]> = {
     {
       content: content,
       meta: {
-        profile: "jim",
+        profileName: "jim",
         publishDate: "2021-01-01",
         slug: "my-day-was-this",
         title: "My day was this",
@@ -69,7 +69,7 @@ export const fakePostMap: Record<string, Post[]> = {
     {
       content: content,
       meta: {
-        profile: "jim",
+        profileName: "jim",
         publishDate: "2021-01-02",
         slug: "its-never-still",
         title: "It's never still",
@@ -79,7 +79,7 @@ export const fakePostMap: Record<string, Post[]> = {
     {
       content: content,
       meta: {
-        profile: "jim",
+        profileName: "jim",
         publishDate: "2021-01-03",
         slug: "gotta-keep-moving",
         title: "Gotta keep moving",
@@ -91,7 +91,7 @@ export const fakePostMap: Record<string, Post[]> = {
     {
       content: content,
       meta: {
-        profile: "jane",
+        profileName: "jane",
         publishDate: "2021-01-01",
         slug: "my-day-was-this",
         title: "My day was this",
@@ -101,7 +101,7 @@ export const fakePostMap: Record<string, Post[]> = {
     {
       content: content,
       meta: {
-        profile: "jane",
+        profileName: "jane",
         publishDate: "2021-01-02",
         slug: "its-never-still",
         title: "It's never still",
@@ -111,7 +111,7 @@ export const fakePostMap: Record<string, Post[]> = {
     {
       content: content,
       meta: {
-        profile: "jane",
+        profileName: "jane",
         publishDate: "2021-01-03",
         slug: "gotta-keep-moving",
         title: "Gotta keep moving",

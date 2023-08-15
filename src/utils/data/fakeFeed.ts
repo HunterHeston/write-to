@@ -4,21 +4,21 @@ export async function getUserFeed(profile: string) {
   const fakePosts: PostMeta[] = [
     {
       slug: "one",
-      profile: profile,
+      profileName: profile,
       title: "My first post",
       publishDate: "2021-01-01",
       visibility: "All",
     },
     {
       slug: "two",
-      profile: profile,
+      profileName: profile,
       title: "My second post",
       publishDate: "2021-01-02",
       visibility: "Just Me",
     },
     {
       slug: "three",
-      profile: profile,
+      profileName: profile,
       title: "My third post",
       publishDate: "2021-01-03",
       visibility: "Approved",
