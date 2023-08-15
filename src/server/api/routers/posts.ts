@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { PostVisibility } from "@prisma/client";
-import { prisma } from "@/server/db";
 import { slugify } from "@/utils/slug";
 
 export const postRouter = createTRPCRouter({
@@ -19,7 +18,7 @@ export const postRouter = createTRPCRouter({
       const slug = slugify(input.title);
 
       try {
-        const post = await prisma.post.create({
+        const post = await ctx.prisma.post.create({
           data: {
             title: input.title,
             content: input.content,

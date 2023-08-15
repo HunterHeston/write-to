@@ -15,6 +15,7 @@ import { PostVisibility, Profile } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { api } from "@/utils/api";
 
 interface ProfileProps {
   profileName: string;
@@ -98,9 +99,11 @@ function BioEditor({
   setIsEditing: (isEditing: boolean) => void;
 }) {
   const [newBio, setNewBio] = useState(bio);
+  const { mutate, error } = api.profile.updateBio.useMutation();
 
   const update = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    mutate({ bio: newBio });
     setIsEditing(false);
     console.log("Updating bio to: ", newBio);
   };
@@ -111,6 +114,7 @@ function BioEditor({
         onChange={(e) => setNewBio(e.target.value)}
         value={newBio}
       ></textarea>
+      {error && <div>Error updating bio: {error.message}</div>}
       <button>Save</button>
     </form>
   );
