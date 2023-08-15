@@ -9,12 +9,12 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import type { GetStaticPaths, GetStaticProps } from "next";
+import { useState } from "react";
 import type { PostMeta } from "@/types/post";
 import { prisma } from "@/server/db";
 import { PostVisibility, Profile } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
 import { api } from "@/utils/api";
 
 interface ProfileProps {
@@ -74,14 +74,21 @@ function EditableBio({
   canEdit: boolean;
 }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [updatedBio, setUpdatedBio] = useState(bio);
 
   if (isEditing) {
-    return <BioEditor bio={bio ?? ""} setIsEditing={setIsEditing} />;
+    return (
+      <BioEditor
+        bio={updatedBio ?? ""}
+        setIsEditing={setIsEditing}
+        setUpdatedBio={setUpdatedBio}
+      />
+    );
   }
 
   return (
     <div className="flex">
-      <p>About: {bio}</p>
+      <p>About: {updatedBio}</p>
       {canEdit && (
         <button onClick={() => setIsEditing(!isEditing)}>
           <Edit size={24}></Edit>
@@ -94,9 +101,11 @@ function EditableBio({
 function BioEditor({
   bio = "",
   setIsEditing,
+  setUpdatedBio,
 }: {
   bio: string;
   setIsEditing: (isEditing: boolean) => void;
+  setUpdatedBio: (bio: string) => void;
 }) {
   const [newBio, setNewBio] = useState(bio);
   const { mutate, error } = api.profile.updateBio.useMutation();
@@ -105,6 +114,7 @@ function BioEditor({
     event.preventDefault();
     mutate({ bio: newBio });
     setIsEditing(false);
+    setUpdatedBio(newBio);
     console.log("Updating bio to: ", newBio);
   };
 
