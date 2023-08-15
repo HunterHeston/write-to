@@ -9,13 +9,11 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import type { GetStaticPaths, GetStaticProps } from "next";
-import { useState } from "react";
 import type { PostMeta } from "@/types/post";
 import { prisma } from "@/server/db";
 import { PostVisibility, Profile } from "@prisma/client";
-import { Edit } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { api } from "@/utils/api";
+import { EditableBio } from "@/components/editableBio";
 
 interface ProfileProps {
   profileName: string;
@@ -41,7 +39,7 @@ export default function Profile({
     <div>
       <h1>{profileName}</h1>
       <p>Member since {new Date(dateJoined).toDateString()}</p>
-      <EditableBio bio={bio} canEdit={profileName === data?.user.name} />
+      <EditableBio bio={bio ?? ""} canEdit={profileName === data?.user.name} />
       <h2>Posts</h2>
       {!posts ||
         (posts.length === 0 && (
@@ -63,70 +61,6 @@ export default function Profile({
         </ul>
       )}
     </div>
-  );
-}
-
-function EditableBio({
-  bio,
-  canEdit,
-}: {
-  bio: string | null;
-  canEdit: boolean;
-}) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [updatedBio, setUpdatedBio] = useState(bio);
-
-  if (isEditing) {
-    return (
-      <BioEditor
-        bio={updatedBio ?? ""}
-        setIsEditing={setIsEditing}
-        setUpdatedBio={setUpdatedBio}
-      />
-    );
-  }
-
-  return (
-    <div className="flex">
-      <p>About: {updatedBio}</p>
-      {canEdit && (
-        <button onClick={() => setIsEditing(!isEditing)}>
-          <Edit size={24}></Edit>
-        </button>
-      )}
-    </div>
-  );
-}
-
-function BioEditor({
-  bio = "",
-  setIsEditing,
-  setUpdatedBio,
-}: {
-  bio: string;
-  setIsEditing: (isEditing: boolean) => void;
-  setUpdatedBio: (bio: string) => void;
-}) {
-  const [newBio, setNewBio] = useState(bio);
-  const { mutate, error } = api.profile.updateBio.useMutation();
-
-  const update = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    mutate({ bio: newBio });
-    setIsEditing(false);
-    setUpdatedBio(newBio);
-    console.log("Updating bio to: ", newBio);
-  };
-
-  return (
-    <form onSubmit={(e) => update(e)}>
-      <textarea
-        onChange={(e) => setNewBio(e.target.value)}
-        value={newBio}
-      ></textarea>
-      {error && <div>Error updating bio: {error.message}</div>}
-      <button>Save</button>
-    </form>
   );
 }
 
