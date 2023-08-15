@@ -13,11 +13,13 @@ import type { GetStaticProps, GetStaticPaths } from "next";
 import { prisma } from "@/server/db";
 import { useRouter } from "next/router";
 import { PostVisibility } from "@prisma/client";
+import Link from "next/link";
 
 type Article = {
   title?: string;
   publishDate?: string;
   content?: string;
+  profile: string;
 };
 
 type Props = {
@@ -39,6 +41,7 @@ export default function ArticlePage({ article }: Props) {
   return (
     <div>
       <h1>{article.title}</h1>
+      <Link href={`/${article.profile}`}>{`${article.profile}'s profile`}</Link>
       <p>{article.publishDate}</p>
       <ReactMarkdown>{article.content ?? ""}</ReactMarkdown>
     </div>
@@ -122,6 +125,7 @@ export const getStaticProps: GetStaticProps<
           content: post[0]?.content,
           publishDate: post[0]?.createdAt.toISOString(),
           title: post[0]?.title,
+          profile: profile,
         },
       },
     };
