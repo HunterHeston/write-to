@@ -10,12 +10,14 @@
 
 import ReactMarkdown from "react-markdown";
 import type { GetStaticProps, GetStaticPaths } from "next";
-import { fakePostMap } from "@/utils/data/posts";
+import { prisma } from "@/server/db";
+import { useRouter } from "next/router";
+import { PostVisibility } from "@prisma/client";
 
 type Article = {
-  title: string;
-  publishDate: string;
-  content: string;
+  title?: string;
+  publishDate?: string;
+  content?: string;
 };
 
 type Props = {
@@ -23,11 +25,22 @@ type Props = {
 };
 
 export default function ArticlePage({ article }: Props) {
+  const router = useRouter();
+
+  if (!article) {
+    return <div>Article not found</div>;
+  }
+
+  if (router.isFallback) {
+    <div>Loading...</div>;
+  }
+
+  console.log(article);
   return (
     <div>
       <h1>{article.title}</h1>
       <p>{article.publishDate}</p>
-      <ReactMarkdown>{article.content}</ReactMarkdown>
+      <ReactMarkdown>{article.content ?? ""}</ReactMarkdown>
     </div>
   );
 }
@@ -39,41 +52,81 @@ type Params = {
   };
 };
 
-export const getStaticPaths: GetStaticPaths = () => {
-  // Replace this with your own implementation to fetch the article slugs
-
+export const getStaticPaths: GetStaticPaths = async () => {
   const paths: Params[] = [];
 
-  for (const user of Object.keys(fakePostMap)) {
-    const posts = fakePostMap[user];
-    if (posts) {
+  try {
+    const profiles = await prisma.profile.findMany({
+      select: {
+        name: true,
+      },
+    });
+
+    for (const profile of profiles) {
+      const posts = await prisma.post.findMany({
+        where: {
+          profile: {
+            name: profile.name,
+          },
+          visibility: PostVisibility.PUBLIC,
+        },
+        select: {
+          slug: true,
+        },
+      });
+
       for (const post of posts) {
         paths.push({
-          params: { profile: post.meta.profile, slug: post.meta.slug },
+          params: {
+            profile: profile.name,
+            slug: post.slug,
+          },
         });
       }
     }
+  } catch (e) {
+    console.error(e);
+    throw e;
   }
 
-  return { paths, fallback: false };
+  return { paths, fallback: "blocking" };
 };
 
 export const getStaticProps: GetStaticProps<
   Props,
   { profile: string; slug: string }
-> = ({ params }) => {
-  if (!params) throw new Error("No params");
+> = async ({ params }) => {
+  if (!params) {
+    return { notFound: true };
+  }
 
   const { profile, slug } = params;
 
-  const posts = fakePostMap[profile];
-  const post = posts?.find((post) => post.meta.slug === slug);
+  try {
+    const post = await prisma.post.findMany({
+      where: {
+        profile: {
+          name: profile,
+        },
+        slug: slug,
+      },
+    });
 
-  const article = {
-    title: post?.meta.title ?? "No title",
-    content: post?.content ?? "No content",
-    publishDate: post?.meta.publishDate ?? "No publish date",
-  };
+    if (post.length === 0) {
+      return { notFound: true };
+    }
 
-  return { props: { article } };
+    return {
+      props: {
+        article: {
+          content: post[0]?.content,
+          publishDate: post[0]?.createdAt.toISOString(),
+          title: post[0]?.title,
+        },
+      },
+    };
+  } catch (e) {
+    console.error(e);
+    return { notFound: true };
+  }
 };
