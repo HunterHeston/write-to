@@ -85,8 +85,44 @@ export const postRouter = createTRPCRouter({
         console.error("Failed to update post: ", e);
       }
     }),
+  deletePost: protectedProcedure
+    .input(
+      z.object({
+        pid: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session.user.id;
 
-  // updatePost
+      try {
+        // get the profile id associated with the user logged in.
+        const profile = await ctx.prisma.profile.findUnique({
+          where: {
+            userId: userId,
+          },
+        });
+        if (!profile) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Profile not found",
+          });
+        }
+
+        const post = await ctx.prisma.post.delete({
+          where: {
+            // Update the existing post.
+            id: input.pid,
+            // Only update it if the post is associated with the logged in user.
+            profileId: profile.id,
+          },
+        });
+
+        console.log("Deleted post", post);
+      } catch (e) {
+        console.error("Failed to update post: ", e);
+      }
+    }),
+
   // deletePost
   // getPostById
   // getPostBySlug
