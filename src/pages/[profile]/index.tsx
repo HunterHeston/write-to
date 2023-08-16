@@ -52,7 +52,7 @@ export default function Profile({
       {posts && (
         <ul>
           {posts.map((post) => (
-            <li key={post.slug} className="mb-4">
+            <li key={post.id} className="mb-4">
               <PostCard postMeta={post} showEdit={userViewingOwnProfile} />
             </li>
           ))}

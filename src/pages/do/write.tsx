@@ -7,26 +7,44 @@
  * 3. Allow users to publish their posts with a selected visibility: All, Approved, None.
  */
 
+import { prisma } from "@/server/db";
 import { api } from "@/utils/api";
 import { PostVisibility } from "@prisma/client";
+import { GetServerSidePropsContext } from "next";
+import { getSession } from "next-auth/react";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
+
+type Props = {
+  title: string;
+  content: string;
+  visibility: PostVisibility;
+  pid: string;
+  isEdit: boolean;
+};
 
 /**
  * This is the page where users write their posts.
  */
-export default function Write() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+export default function Write(props: Props) {
+  const [title, setTitle] = useState(props.title);
+  const [content, setContent] = useState(props.content);
   const [visibility, setVisibility] = useState<PostVisibility>(
-    PostVisibility.PRIVATE
+    props.visibility
   );
 
-  const { mutate, error } = api.posts.createPost.useMutation();
+  const { mutate: create, error: createError } =
+    api.posts.createPost.useMutation();
+  const { mutate: update, error: updateError } =
+    api.posts.updatePost.useMutation();
 
   const onSend = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    mutate({ title, content, visibility });
+    if (props.isEdit) {
+      update({ title, content, visibility, pid: props.pid });
+    } else {
+      create({ title, content, visibility });
+    }
   };
 
   return (
@@ -55,7 +73,42 @@ export default function Write() {
         </select>
         <button type="submit">Sent it</button>
       </form>
-      {error && <p>{error.message}</p>}
+      {createError && <p>{createError.message}</p>}
+      {updateError && <p>{updateError.message}</p>}
     </div>
   );
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const session = await getSession(ctx);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login", // Redirect to the login page if the user is not authenticated
+        permanent: false,
+      },
+    };
+  }
+
+  const pid = ctx.query.pid;
+
+  if (pid) {
+    const post = await prisma.post.findUnique({
+      where: { id: pid as string },
+    });
+    console.log(post);
+    if (post) {
+      return {
+        props: {
+          title: post.title,
+          content: post.content,
+          visibility: post.visibility,
+          pid: post.id,
+          isEdit: true,
+        },
+      };
+    }
+  }
+
+  return { props: {} };
 }
