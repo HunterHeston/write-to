@@ -4,6 +4,7 @@ export type PostMeta = {
   title: string;
   publishDate: string;
   visibility?: string;
+  id: string;
 };
 
 export type Post = {

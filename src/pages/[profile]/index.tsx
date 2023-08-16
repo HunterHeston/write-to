@@ -6,7 +6,6 @@
  * 2. Display a reverse chronological list of all posts by the author.
  */
 
-import Link from "next/link";
 import { useRouter } from "next/router";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import type { PostMeta } from "@/types/post";
@@ -14,6 +13,7 @@ import { prisma } from "@/server/db";
 import { PostVisibility, Profile } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { EditableBio } from "@/components/editableBio";
+import PostCard from "@/components/postCard";
 
 interface ProfileProps {
   profileName: string;
@@ -35,11 +35,13 @@ export default function Profile({
     return <div>Loading...</div>;
   }
 
+  const userViewingOwnProfile = data?.user.name === profileName;
+
   return (
     <div>
       <h1>{profileName}</h1>
       <p>Member since {new Date(dateJoined).toDateString()}</p>
-      <EditableBio bio={bio ?? ""} canEdit={profileName === data?.user.name} />
+      <EditableBio bio={bio ?? ""} canEdit={userViewingOwnProfile} />
       <h2>Posts</h2>
       {!posts ||
         (posts.length === 0 && (
@@ -51,11 +53,7 @@ export default function Profile({
         <ul>
           {posts.map((post) => (
             <li key={post.slug} className="mb-4">
-              <Link href={`/${post.profileName}/${post.slug}`}>
-                {post.title}
-              </Link>
-              <div>Published {post.publishDate}</div>
-              <div>{post.visibility}</div>
+              <PostCard postMeta={post} showEdit={userViewingOwnProfile} />
             </li>
           ))}
         </ul>
@@ -123,6 +121,7 @@ export const getStaticProps: GetStaticProps<ProfileProps> = async ({
       publishDate: post.createdAt.toISOString(),
       profileName: profile.name,
       slug: post.slug,
+      id: post.id,
     }));
 
     return {
