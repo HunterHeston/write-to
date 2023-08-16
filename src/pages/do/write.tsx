@@ -10,7 +10,7 @@
 import { prisma } from "@/server/db";
 import { api } from "@/utils/api";
 import { PostVisibility } from "@prisma/client";
-import { GetServerSidePropsContext } from "next";
+import type { GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
