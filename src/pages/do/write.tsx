@@ -27,10 +27,10 @@ type Props = {
  * This is the page where users write their posts.
  */
 export default function Write(props: Props) {
-  const [title, setTitle] = useState(props.title);
-  const [content, setContent] = useState(props.content);
+  const [title, setTitle] = useState(props.title || "");
+  const [content, setContent] = useState(props.content || "");
   const [visibility, setVisibility] = useState<PostVisibility>(
-    props.visibility
+    props.visibility || PostVisibility.PRIVATE
   );
 
   const { mutate: create, error: createError } =
