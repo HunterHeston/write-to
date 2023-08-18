@@ -14,12 +14,14 @@ import { PostVisibility, Profile } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { EditableBio } from "@/components/editableBio";
 import PostCard from "@/components/postCard";
+import FollowButton from "@/components/followButton";
 
 interface ProfileProps {
   profileName: string;
   bio: string | null;
   dateJoined: string;
   posts?: PostMeta[];
+  profileId: string;
 }
 
 export default function Profile({
@@ -27,6 +29,7 @@ export default function Profile({
   bio,
   dateJoined,
   posts,
+  profileId,
 }: ProfileProps) {
   const router = useRouter();
   const { data } = useSession();
@@ -42,6 +45,7 @@ export default function Profile({
       <h1>{profileName}</h1>
       <p>Member since {new Date(dateJoined).toDateString()}</p>
       <EditableBio bio={bio ?? ""} canEdit={userViewingOwnProfile} />
+      <FollowButton profileId={profileId}></FollowButton>
       <h2>Posts</h2>
       {!posts ||
         (posts.length === 0 && (
@@ -129,6 +133,7 @@ export const getStaticProps: GetStaticProps<ProfileProps> = async ({
         profileName: profile.name,
         bio: profile.bio,
         dateJoined: profile.createdAt.toISOString(),
+        profileId: profile.id,
         posts: postMetaData,
       },
     };

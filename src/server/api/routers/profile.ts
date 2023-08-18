@@ -36,4 +36,54 @@ export const profileRouter = createTRPCRouter({
 
       return updatedProfile;
     }),
+  followRequest: protectedProcedure
+    .input(
+      z.object({
+        profileId: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const requestor = ctx.session.user.id;
+      const profileToFollow = input.profileId;
+
+      try {
+        const requestingProfile = await ctx.prisma.profile.findUnique({
+          where: {
+            userId: requestor,
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        if (!requestingProfile) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "The profile requesting to follow does not exist.",
+          });
+        }
+
+        const res = await ctx.prisma.followRequest.create({
+          data: {
+            requesting: {
+              connect: {
+                id: profileToFollow,
+              },
+            },
+            requestor: {
+              connect: {
+                id: requestingProfile.id,
+              },
+            },
+          },
+        });
+      } catch (e) {
+        console.error(e);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+
+      // const followResult = ctx.prisma.profile.update({});
+    }),
 });

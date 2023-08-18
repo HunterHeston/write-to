@@ -109,12 +109,15 @@ model Profile {
   // Followers and Following of this profile.
   followedBy ProfileFollower[] @relation("FollowerRel")
   following  ProfileFollower[] @relation("FollowingRel")
+
+  // profiles that have requested to follow this profile.
+  requester  FollowRequest[] @relation("RequestedRel")
+  requesting FollowRequest[] @relation("RequestingRel")
 }
 
 model ProfileFollower {
-  id        String         @id @default(cuid())
-  createdAt DateTime       @default(now())
-  status    FollowerStatus @default(REQUESTED)
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
 
   // the profile that is being followed
   followingId String
@@ -125,8 +128,13 @@ model ProfileFollower {
   follower   Profile @relation("FollowerRel", fields: [followerId], references: [id])
 }
 
-enum FollowerStatus {
-  REQUESTED
-  FOLLOWING
-  BLOCKED
+model FollowRequest {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  requestor   Profile? @relation("RequestedRel", fields: [requestorId], references: [id])
+  requestorId String?
+
+  requesting   Profile? @relation("RequestingRel", fields: [requestingId], references: [id])
+  requestingId String?
 }
