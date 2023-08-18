@@ -1,3 +1,5 @@
+import { Post, Profile } from "@prisma/client";
+
 export type PostMeta = {
   slug: string;
   profileName: string;
@@ -7,14 +9,14 @@ export type PostMeta = {
   id: string;
 };
 
-export type Post = {
-  meta: PostMeta;
-  content: string;
-};
-
 export enum Visibility {
   All = "All",
   Approved = "Approved",
   JustMe = "Just Me",
   IntoTheEther = "Into the ether",
 }
+
+export type FeedItem = {
+  profileName: string;
+  post: Post;
+};

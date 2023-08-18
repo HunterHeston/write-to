@@ -1,12 +1,13 @@
 import type { PostMeta } from "@/types/post";
-import { getUserFeed } from "@/utils/data/fakeFeed";
+import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useState } from "react";
 
 export default function Feed() {
   const { data, status } = useSession();
-  const [feed, setFeed] = useState<PostMeta[]>([]);
+  const { data: feedData, status: feedStatus } = api.feed.getFeed.useQuery();
+
+  console.log("feedData: ", feedData);
 
   if (status === "loading") {
     return <div>Loading...</div>;
@@ -25,10 +26,6 @@ export default function Feed() {
     );
   }
 
-  getUserFeed(data?.user.name ?? "")
-    .then((feed) => setFeed(feed))
-    .catch(console.error);
-
   return (
     <div>
       {data && (
@@ -39,15 +36,14 @@ export default function Feed() {
       <div>
         <h2 className="mb-8">Your feed</h2>
         <ul>
-          {feed.map((post) => (
-            <li key={post.slug} className="mb-4">
-              <Link href={`/${post.profileName}/${post.slug}`}>
-                {post.title}
-              </Link>
-              <div>By {post.profileName}</div>
-              <div>Published {post.publishDate}</div>
-            </li>
-          ))}
+          {feedData &&
+            feedData.map((post) => (
+              <li key={post.slug} className="mb-4">
+                <Link href={`/${post.id}/${post.slug}`}>{post.title}</Link>
+                <div>By {post.id}</div>
+                <div>Published {post.createdAt.toDateString()}</div>
+              </li>
+            ))}
         </ul>
       </div>
     </div>
