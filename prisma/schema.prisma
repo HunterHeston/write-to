@@ -133,8 +133,8 @@ model FollowRequest {
   createdAt DateTime @default(now())
 
   requestor   Profile? @relation("RequestedRel", fields: [requestorId], references: [id])
-  requestorId String?
+  requestorId String?  @unique
 
   requesting   Profile? @relation("RequestingRel", fields: [requestingId], references: [id])
-  requestingId String?
+  requestingId String?  @unique
 }
