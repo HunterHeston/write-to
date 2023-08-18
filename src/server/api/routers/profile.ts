@@ -63,7 +63,7 @@ export const profileRouter = createTRPCRouter({
           });
         }
 
-        const res = await ctx.prisma.followRequest.create({
+        await ctx.prisma.followRequest.create({
           data: {
             requesting: {
               connect: {
@@ -83,7 +83,5 @@ export const profileRouter = createTRPCRouter({
           code: "INTERNAL_SERVER_ERROR",
         });
       }
-
-      // const followResult = ctx.prisma.profile.update({});
     }),
 });
