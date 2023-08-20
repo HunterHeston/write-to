@@ -14,6 +14,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import { getServerAuthSession } from "@/server/auth";
 import { prisma } from "@/server/db";
+import { Profile } from "@prisma/client";
 
 /**
  * 1. CONTEXT
@@ -25,6 +26,7 @@ import { prisma } from "@/server/db";
 
 interface CreateContextOptions {
   session: Session | null;
+  profile: Profile | null;
 }
 
 /**
@@ -40,6 +42,7 @@ interface CreateContextOptions {
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
+    profile: opts.profile,
     prisma,
   };
 };
@@ -55,9 +58,15 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 
   // Get the session from the server using the getServerSession wrapper function
   const session = await getServerAuthSession({ req, res });
+  const profile = await prisma.profile.findUnique({
+    where: {
+      userId: session?.user?.id,
+    },
+  });
 
   return createInnerTRPCContext({
     session,
+    profile,
   });
 };
 
@@ -108,13 +117,14 @@ export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.session?.user) {
+  if (!ctx.session?.user || !ctx.profile) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({
     ctx: {
       // infers the `session` as non-nullable
       session: { ...ctx.session, user: ctx.session.user },
+      profile: { ...ctx.profile },
     },
   });
 });

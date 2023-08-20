@@ -113,11 +113,12 @@ export const profileRouter = createTRPCRouter({
         },
       },
     });
-    console.log(followerRequests);
-    console.log(
-      `Profile ${profile.name} has ${followerRequests.length} follower requests`
-    );
 
     return followerRequests;
   }),
+  acceptFollowerRequest: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      console.log(ctx.profile.name);
+    }),
 });
