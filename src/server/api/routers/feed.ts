@@ -43,7 +43,7 @@ export const feedRouter = createTRPCRouter({
 
       const profileMap = new Map<string, Profile>();
       for (const p of profiles) {
-        profileMap.set(profile.id, p);
+        profileMap.set(p.id, p);
       }
 
       const profilePostsToFetch = profiles.map((p) => p.id);
@@ -58,13 +58,14 @@ export const feedRouter = createTRPCRouter({
 
       const feedItems: FeedItem[] = [];
       for (const post of feedPosts) {
+        console.log(post.profileId, profileMap.get(post.profileId));
         feedItems.push({
           post: post,
-          profileName: profileMap.get(post.profileId)?.id || "",
+          profileName: profileMap.get(post.profileId)?.name || "",
         });
       }
 
-      return feedPosts;
+      return feedItems;
     } catch (e) {
       console.error("Failed to update post: ", e);
     }

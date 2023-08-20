@@ -38,10 +38,12 @@ export default function Feed() {
         <ul>
           {feedData &&
             feedData.map((post) => (
-              <li key={post.slug} className="mb-4">
-                <Link href={`/${post.id}/${post.slug}`}>{post.title}</Link>
-                <div>By {post.id}</div>
-                <div>Published {post.createdAt.toDateString()}</div>
+              <li key={post.post.slug} className="mb-4">
+                <Link href={`/${post.profileName}/${post.post.slug}`}>
+                  {post.post.title}
+                </Link>
+                <div>By {post.profileName}</div>
+                <div>Published {post.post.createdAt.toDateString()}</div>
               </li>
             ))}
         </ul>
