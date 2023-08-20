@@ -84,4 +84,40 @@ export const profileRouter = createTRPCRouter({
         });
       }
     }),
+  listFollowerRequests: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+
+    const profile = await ctx.prisma.profile.findUnique({
+      where: {
+        userId: userId,
+      },
+    });
+
+    if (!profile) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Profile not found",
+      });
+    }
+
+    const followerRequests = await ctx.prisma.followRequest.findMany({
+      where: {
+        requestingId: profile.id,
+      },
+      include: {
+        requestor: {
+          select: {
+            name: true,
+            bio: true,
+          },
+        },
+      },
+    });
+    console.log(followerRequests);
+    console.log(
+      `Profile ${profile.name} has ${followerRequests.length} follower requests`
+    );
+
+    return followerRequests;
+  }),
 });
