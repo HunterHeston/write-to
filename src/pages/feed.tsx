@@ -1,11 +1,14 @@
-import type { PostMeta } from "@/types/post";
 import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 export default function Feed() {
   const { data, status } = useSession();
-  const { data: feedData, status: feedStatus } = api.feed.getFeed.useQuery();
+  const {
+    data: feedData,
+    status: feedStatus,
+    error: feedError,
+  } = api.feed.getFeed.useQuery();
 
   console.log("feedData: ", feedData);
 
@@ -36,17 +39,20 @@ export default function Feed() {
       <div>
         <h2 className="mb-8">Your feed</h2>
         <ul>
-          {feedData &&
-            feedData.map((post) => (
-              <li key={post.post.slug} className="mb-4">
-                <Link href={`/${post.profileName}/${post.post.slug}`}>
-                  {post.post.title}
-                </Link>
-                <div>By {post.profileName}</div>
-                <div>Published {post.post.createdAt.toDateString()}</div>
-              </li>
-            ))}
+          {feedData?.map((post) => (
+            <li key={post.post.slug} className="mb-4">
+              <Link href={`/${post.profileName}/${post.post.slug}`}>
+                {post.post.title}
+              </Link>
+              <div>By {post.profileName}</div>
+              <div>Published {post.post.createdAt.toDateString()}</div>
+            </li>
+          ))}
         </ul>
+        {feedStatus === "loading" && <div>feed is loading...</div>}
+        {feedStatus === "error" && (
+          <div>failed to load feed {feedError.message}</div>
+        )}
       </div>
     </div>
   );

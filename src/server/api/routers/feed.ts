@@ -1,8 +1,7 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { FeedItem } from "@/types/post";
-import { Profile } from "@prisma/client";
+import type { FeedItem } from "@/types/post";
+import type { Profile } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { PhoneForwarded } from "lucide-react";
 
 export const feedRouter = createTRPCRouter({
   getFeed: protectedProcedure.query(async ({ ctx }) => {
@@ -58,10 +57,17 @@ export const feedRouter = createTRPCRouter({
 
       const feedItems: FeedItem[] = [];
       for (const post of feedPosts) {
-        console.log(post.profileId, profileMap.get(post.profileId));
+        const p = profileMap.get(post.profileId);
+        if (!p) {
+          console.error(
+            `Did not fetch profile for postId: ${post.id} by profileId: ${post.profileId}`
+          );
+          continue;
+        }
+
         feedItems.push({
           post: post,
-          profileName: profileMap.get(post.profileId)?.name || "",
+          profileName: p.name,
         });
       }
 

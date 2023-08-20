@@ -1,4 +1,4 @@
-import { Post, Profile } from "@prisma/client";
+import type { Post } from "@prisma/client";
 
 export type PostMeta = {
   slug: string;
