@@ -14,7 +14,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import { getServerAuthSession } from "@/server/auth";
 import { prisma } from "@/server/db";
-import { Profile } from "@prisma/client";
+import type { Profile } from "@prisma/client";
 
 /**
  * 1. CONTEXT

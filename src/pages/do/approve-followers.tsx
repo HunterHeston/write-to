@@ -1,5 +1,5 @@
 import { api } from "@/utils/api";
-import { FollowRequest } from "@prisma/client";
+import { type FollowRequest } from "@prisma/client";
 import Link from "next/link";
 
 export default function ApproveFollowers() {
@@ -20,7 +20,7 @@ export default function ApproveFollowers() {
       {}
     );
   };
-  const reject = (id: string) => {};
+  // const reject = (id: string) => {};
 
   return (
     <div>
@@ -34,7 +34,7 @@ export default function ApproveFollowers() {
             <p>{followerRequest.requestor?.bio}</p>
             <p>{followerRequest.createdAt.toDateString()}</p>
             <button onClick={() => approve(followerRequest)}>Approve</button>
-            <button onClick={() => reject(followerRequest.id)}>Deny</button>
+            {/* <button onClick={() => reject(followerRequest.id)}>Deny</button> */}
           </li>
         ))}
       </ul>
