@@ -7,7 +7,7 @@
  * 3. Give users a sense of the purpose of the application.
  */
 
-import { AuthShowcase } from "@/components/ui/authShowcase";
+import { AuthShowcase } from "@/components/authShowcase";
 
 export default function Home() {
   return (
