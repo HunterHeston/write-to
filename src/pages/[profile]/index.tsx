@@ -84,7 +84,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       params: { profile: profile.name },
     }));
 
-    return { paths, fallback: true };
+    return { paths, fallback: true, revalidate: 10 };
   } catch (e) {
     console.error("Error generating static paths: ", e);
     throw e;
