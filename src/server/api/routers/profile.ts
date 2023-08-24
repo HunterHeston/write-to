@@ -167,7 +167,7 @@ export const profileRouter = createTRPCRouter({
     )
     .mutation(async ({ input, ctx }) => {
       try {
-        const res = await ctx.prisma.followRequest.delete({
+        await ctx.prisma.followRequest.delete({
           where: {
             id: input.id,
           },
@@ -181,4 +181,22 @@ export const profileRouter = createTRPCRouter({
         });
       }
     }),
+  listFollowers: protectedProcedure.query(async ({ ctx }) => {
+    const pid = ctx.profile.id;
+
+    const followers = await ctx.prisma.profileFollower.findMany({
+      where: {
+        followingId: pid,
+      },
+      include: {
+        follower: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return followers;
+  }),
 });
