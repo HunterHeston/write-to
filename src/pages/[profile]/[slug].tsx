@@ -8,12 +8,14 @@
  * This is the route and component where people will spend their time reading.
  */
 
-import ReactMarkdown from "react-markdown";
 import type { GetStaticProps, GetStaticPaths } from "next";
 import { prisma } from "@/server/db";
 import { useRouter } from "next/router";
 import { PostVisibility } from "@prisma/client";
 import Link from "next/link";
+import { H1 } from "@/components/ui/typography";
+import { Markdown } from "@/components/ui/reactMarkdown";
+import Head from "next/head";
 
 type Article = {
   title?: string;
@@ -38,12 +40,27 @@ export default function ArticlePage({ article }: Props) {
   }
 
   return (
-    <div>
-      <h1>{article.title}</h1>
-      <Link href={`/${article.profile}`}>{`${article.profile}'s profile`}</Link>
-      <p>{article.publishDate}</p>
-      <ReactMarkdown>{article.content ?? ""}</ReactMarkdown>
-    </div>
+    <>
+      <Head>
+        <title>{article.title}</title>
+        <meta name="author" content={article.profile} />
+        <meta name="date" content={article.publishDate ?? ""} />
+      </Head>
+      <div className="flex justify-center">
+        <div className=" w-full px-5 pt-16 text-primary">
+          <H1>{article.title}</H1>
+          <div className="my-5">
+            <Link href={`/${article.profile}`}>
+              By <span className="text-accent">{article.profile}</span>
+            </Link>
+          </div>
+          <p className="border-l-2 border-l-zinc-600 pl-2 align-middle text-zinc-600 dark:text-primary">
+            {dateStringToDayMonthYear(article.publishDate ?? "")}
+          </p>
+          <Markdown>{article.content ?? ""}</Markdown>
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -133,3 +150,14 @@ export const getStaticProps: GetStaticProps<
     return { notFound: true };
   }
 };
+
+// Helper functions
+// gets the human readable month, day and year from a date string
+function dateStringToDayMonthYear(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
