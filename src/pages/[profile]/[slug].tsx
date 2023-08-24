@@ -37,7 +37,6 @@ export default function ArticlePage({ article }: Props) {
     <div>Loading...</div>;
   }
 
-  console.log(article);
   return (
     <div>
       <h1>{article.title}</h1>

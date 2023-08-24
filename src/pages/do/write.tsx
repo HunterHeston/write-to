@@ -96,7 +96,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     const post = await prisma.post.findUnique({
       where: { id: pid as string },
     });
-    console.log(post);
     if (post) {
       return {
         props: {

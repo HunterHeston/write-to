@@ -10,8 +10,6 @@ export default function Feed() {
     error: feedError,
   } = api.feed.getFeed.useQuery();
 
-  console.log("feedData: ", feedData);
-
   if (status === "loading") {
     return <div>Loading...</div>;
   }

@@ -84,7 +84,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       params: { profile: profile.name },
     }));
 
-    return { paths, fallback: true, revalidate: 10 };
+    return { paths, fallback: true };
   } catch (e) {
     console.error("Error generating static paths: ", e);
     throw e;
@@ -96,6 +96,8 @@ export const getStaticProps: GetStaticProps<ProfileProps> = async ({
 }) => {
   // Fetch profile data from an API or database
   const profileName = params?.profile as string;
+
+  console.log("Fetching profile data for: ", profileName);
 
   try {
     const profile = await prisma.profile.findUnique({
@@ -138,6 +140,7 @@ export const getStaticProps: GetStaticProps<ProfileProps> = async ({
         profileId: profile.id,
         posts: postMetaData,
       },
+      revalidate: 15,
     };
   } catch (e) {
     console.error("Error fetching profile data: ", e);
