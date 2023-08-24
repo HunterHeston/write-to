@@ -53,6 +53,12 @@ function Nav() {
         <li>
           <Link href="/do/write">Write</Link>
         </li>
+        <li>
+          <Link href="/do/view-followers">Followers</Link>
+        </li>
+        <li>
+          <Link href="/do/approve-followers">Follow-Requests</Link>
+        </li>
       </ul>
     </div>
   );
