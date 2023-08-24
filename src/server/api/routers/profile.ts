@@ -184,19 +184,48 @@ export const profileRouter = createTRPCRouter({
   listFollowers: protectedProcedure.query(async ({ ctx }) => {
     const pid = ctx.profile.id;
 
-    const followers = await ctx.prisma.profileFollower.findMany({
-      where: {
-        followingId: pid,
-      },
-      include: {
-        follower: {
-          select: {
-            name: true,
+    try {
+      const followers = await ctx.prisma.profileFollower.findMany({
+        where: {
+          followingId: pid,
+        },
+        include: {
+          follower: {
+            select: {
+              name: true,
+            },
           },
         },
-      },
-    });
+      });
 
-    return followers;
+      return followers;
+    } catch (e) {
+      console.error(e);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+      });
+    }
   }),
+  deleteFollower: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const pid = ctx.profile.id;
+
+      try {
+        await ctx.prisma.profileFollower.delete({
+          where: {
+            id: input.id,
+            // make sure the requestor is the profile owner
+            followingId: pid,
+          },
+        });
+
+        return { success: true };
+      } catch (e) {
+        console.error(e);
+        throw new TRPCError({
+          code: "NOT_FOUND",
+        });
+      }
+    }),
 });
