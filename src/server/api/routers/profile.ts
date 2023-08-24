@@ -157,4 +157,28 @@ export const profileRouter = createTRPCRouter({
         });
       }
     }),
+  rejectFollowerRequest: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        requestorId: z.string(),
+        requestingId: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const res = await ctx.prisma.followRequest.delete({
+          where: {
+            id: input.id,
+          },
+        });
+
+        return { success: true };
+      } catch (e) {
+        console.error(e);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+    }),
 });
