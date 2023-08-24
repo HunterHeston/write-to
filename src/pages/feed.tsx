@@ -42,7 +42,9 @@ export default function Feed() {
               <Link href={`/${post.profileName}/${post.post.slug}`}>
                 {post.post.title}
               </Link>
-              <div>By {post.profileName}</div>
+              <div>
+                <Link href={`/${post.profileName}`}>By {post.profileName}</Link>
+              </div>
               <div>Published {post.post.createdAt.toDateString()}</div>
             </li>
           ))}
