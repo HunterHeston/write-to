@@ -18,7 +18,7 @@ export const postRouter = createTRPCRouter({
 
       try {
         const slug = slugify(input.title);
-        const post = await ctx.prisma.post.create({
+        await ctx.prisma.post.create({
           data: {
             title: input.title,
             content: input.content,
