@@ -84,7 +84,7 @@ model Post {
   updatedAt  DateTime       @updatedAt
   title      String
   slug       String
-  content    String
+  content    String         @db.Text
   visibility PostVisibility @default(PRIVATE)
 
   // the profile that made this post

@@ -35,6 +35,9 @@ export const postRouter = createTRPCRouter({
         console.log("Created post", post);
       } catch (e) {
         console.error("Failed to create post: ", e);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+        });
       }
     }),
   updatePost: protectedProcedure
