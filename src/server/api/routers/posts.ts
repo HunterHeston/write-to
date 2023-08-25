@@ -31,8 +31,6 @@ export const postRouter = createTRPCRouter({
             },
           },
         });
-
-        console.log("Created post", post);
       } catch (e) {
         console.error("Failed to create post: ", e);
         throw new TRPCError({
