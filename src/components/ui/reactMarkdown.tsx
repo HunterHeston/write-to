@@ -17,6 +17,7 @@ import {
   Td,
   Tr,
 } from "@/components/ui/typography";
+import Link from "next/link";
 
 type Props = {
   children: string;
@@ -34,8 +35,8 @@ export function Markdown({ children }: Props) {
         h6: ({ ...props }) => <h6 className="mb-2" {...props} />,
         p: ({ ...props }) => <P className="my-5 leading-loose" {...props} />,
         a: ({ ...props }) => (
-          <a
-            className="text-primary transition-all hover:text-zinc-600"
+          <Link
+            href={props.href ?? ""}
             target="_blank"
             rel="noopener noreferrer"
             {...props}

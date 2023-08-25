@@ -47,14 +47,14 @@ export default function ArticlePage({ article }: Props) {
         <meta name="date" content={article.publishDate ?? ""} />
       </Head>
       <div className="flex justify-center">
-        <div className=" w-full px-5 pt-16 text-primary">
+        <div className=" w-full px-5 pt-16">
           <H1>{article.title}</H1>
           <div className="my-5">
             <Link href={`/${article.profile}`}>
-              By <span className="text-accent">{article.profile}</span>
+              By <span className="text-primary">{article.profile}</span>
             </Link>
           </div>
-          <p className="border-l-2 border-l-zinc-600 pl-2 align-middle text-zinc-600 dark:text-primary">
+          <p className="border-l-2 border-l-zinc-600 pl-2 align-middle">
             {dateStringToDayMonthYear(article.publishDate ?? "")}
           </p>
           <Markdown>{article.content ?? ""}</Markdown>

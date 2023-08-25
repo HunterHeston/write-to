@@ -54,11 +54,7 @@ export function Small({ children }: { children: ReactNode }) {
 }
 
 export function P({ children }: { children: ReactNode }) {
-  return (
-    <p className="leading-7 text-primary [&:not(:first-child)]:mt-6">
-      {children}
-    </p>
-  );
+  return <p className="leading-7 [&:not(:first-child)]:mt-6">{children}</p>;
 }
 
 export function Muted({ children }: { children: ReactNode }) {
@@ -75,7 +71,7 @@ export function Large({ children }: { children: ReactNode }) {
 
 export function InlineCode({ children }: { children: ReactNode }) {
   return (
-    <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
+    <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
       {children}
     </code>
   );
@@ -97,7 +93,7 @@ export function H1({
   return (
     <h1
       className={cn(
-        "scroll-m-20 text-4xl font-extrabold tracking-tight text-primary lg:text-5xl",
+        "scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl",
         className
       )}
     >
@@ -108,7 +104,7 @@ export function H1({
 
 export function H2({ children }: { children: ReactNode }) {
   return (
-    <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight text-primary transition-colors first:mt-0">
+    <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
       {children}
     </h2>
   );
