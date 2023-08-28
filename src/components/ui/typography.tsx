@@ -70,7 +70,7 @@ export function Td({ children, className }: Props) {
 
 export function Table({ children, className }: Props) {
   return (
-    <div className="my-6 w-full overflow-y-auto">
+    <div className={cn("my-6 w-full overflow-y-auto", className)}>
       <table className="w-full">{children}</table>
     </div>
   );
