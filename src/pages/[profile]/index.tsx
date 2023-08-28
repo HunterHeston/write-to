@@ -13,7 +13,7 @@ import { prisma } from "@/server/db";
 import { PostVisibility, Profile } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { EditableBio } from "@/components/editableBio";
-import PostCard from "@/components/postCard";
+import PostCard from "@/components/post/postCard";
 import FollowButton from "@/components/followButton";
 
 interface ProfileProps {

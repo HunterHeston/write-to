@@ -26,14 +26,15 @@ type Props = {
 export function Markdown({ children }: Props) {
   return (
     <ReactMarkdown
+      className="text-lg leading-loose"
       components={{
-        h1: ({ ...props }) => <H1 {...props} />,
-        h2: ({ ...props }) => <H2 {...props} />,
-        h3: ({ ...props }) => <H3 {...props} />,
-        h4: ({ ...props }) => <H4 {...props} />,
-        h5: ({ ...props }) => <h5 className="mb-2" {...props} />,
-        h6: ({ ...props }) => <h6 className="mb-2" {...props} />,
-        p: ({ ...props }) => <P className="my-5 leading-loose" {...props} />,
+        h1: ({ ...props }) => <H1 className="mt-14" {...props} />,
+        h2: ({ ...props }) => <H2 className="mt-14" {...props} />,
+        h3: ({ ...props }) => <H3 className="mt-14" {...props} />,
+        h4: ({ ...props }) => <H4 className="mt-14" {...props} />,
+        h5: ({ ...props }) => <h5 className="mt-14" {...props} />,
+        h6: ({ ...props }) => <h6 className="mt-14" {...props} />,
+        p: ({ ...props }) => <P className="leading-loose" {...props} />,
         a: ({ ...props }) => (
           <Link
             href={props.href ?? ""}

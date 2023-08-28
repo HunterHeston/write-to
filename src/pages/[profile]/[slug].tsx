@@ -12,10 +12,8 @@ import type { GetStaticProps, GetStaticPaths } from "next";
 import { prisma } from "@/server/db";
 import { useRouter } from "next/router";
 import { PostVisibility } from "@prisma/client";
-import Link from "next/link";
-import { H1 } from "@/components/ui/typography";
-import { Markdown } from "@/components/ui/reactMarkdown";
 import Head from "next/head";
+import Post from "@/components/post/post";
 
 type Article = {
   title?: string;
@@ -46,20 +44,7 @@ export default function ArticlePage({ article }: Props) {
         <meta name="author" content={article.profile} />
         <meta name="date" content={article.publishDate ?? ""} />
       </Head>
-      <div className="flex justify-center">
-        <div className=" w-full px-5 pt-16">
-          <H1>{article.title}</H1>
-          <div className="my-5">
-            <Link href={`/${article.profile}`}>
-              By <span className="text-primary">{article.profile}</span>
-            </Link>
-          </div>
-          <p className="border-l-2 border-l-zinc-600 pl-2 align-middle">
-            {dateStringToDayMonthYear(article.publishDate ?? "")}
-          </p>
-          <Markdown>{article.content ?? ""}</Markdown>
-        </div>
-      </div>
+      <Post {...article}></Post>
     </>
   );
 }
@@ -150,14 +135,3 @@ export const getStaticProps: GetStaticProps<
     return { notFound: true };
   }
 };
-
-// Helper functions
-// gets the human readable month, day and year from a date string
-function dateStringToDayMonthYear(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-}
