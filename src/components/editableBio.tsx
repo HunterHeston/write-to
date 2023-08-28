@@ -1,13 +1,16 @@
 import { api } from "@/utils/api";
+import { cn } from "@/utils/utils";
 import { Edit } from "lucide-react";
 import { useState } from "react";
 
 export function EditableBio({
   bio,
   canEdit,
+  className,
 }: {
   bio: string;
   canEdit: boolean;
+  className?: string;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [updatedBio, setUpdatedBio] = useState(bio);
@@ -26,11 +29,14 @@ export function EditableBio({
   // display the bio.
   // If the can are the profile owner they can see the edit button.
   return (
-    <div className="flex">
-      <p>About: {updatedBio}</p>
+    <div className={cn("flex", className)}>
+      <p>{updatedBio}</p>
       {canEdit && (
-        <button onClick={() => setIsEditing(!isEditing)}>
-          <Edit size={24}></Edit>
+        <button
+          className="flex items-center"
+          onClick={() => setIsEditing(!isEditing)}
+        >
+          <Edit className="ml-2" size={14}></Edit>
         </button>
       )}
     </div>

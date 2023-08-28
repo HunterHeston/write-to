@@ -15,6 +15,10 @@ import { useSession } from "next-auth/react";
 import { EditableBio } from "@/components/editableBio";
 import PostCard from "@/components/post/postCard";
 import FollowButton from "@/components/followButton";
+import { H1, H2 } from "@/components/ui/typography";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { daysSince } from "@/utils/dates";
+import { Cake } from "lucide-react";
 
 interface ProfileProps {
   profileName: string;
@@ -22,6 +26,7 @@ interface ProfileProps {
   dateJoined: string;
   posts?: PostMeta[];
   profileId: string;
+  avatarURL: string | null;
 }
 
 export default function Profile({
@@ -30,6 +35,7 @@ export default function Profile({
   dateJoined,
   posts,
   profileId,
+  avatarURL,
 }: ProfileProps) {
   const router = useRouter();
   const { data } = useSession();
@@ -41,14 +47,30 @@ export default function Profile({
   const userViewingOwnProfile = data?.user.name === profileName;
 
   return (
-    <div>
-      <h1>{profileName}</h1>
-      <p>Member since {new Date(dateJoined).toDateString()}</p>
-      <EditableBio bio={bio ?? ""} canEdit={userViewingOwnProfile} />
+    <div className="flex flex-col p-5">
+      <AvatarContainer profileName={profileName} avatarURL={avatarURL} />
+      {/* profile meta data */}
+      <div className="mb-4 flex h-8 items-center gap-2">
+        <Cake className="inline"></Cake>
+        <p className="align-middle">
+          Joined{" "}
+          <span className="text-primary">
+            {daysSince(new Date(dateJoined))}
+          </span>{" "}
+          days ago
+        </p>
+      </div>
+
+      {/* bio */}
+      <EditableBio
+        className="mb-8"
+        bio={bio ?? ""}
+        canEdit={userViewingOwnProfile}
+      />
       {!userViewingOwnProfile && (
         <FollowButton profileId={profileId}></FollowButton>
       )}
-      <h2>Posts</h2>
+      <H2 className="mb-6">Posts</H2>
       {!posts ||
         (posts.length === 0 && (
           <div>
@@ -64,6 +86,27 @@ export default function Profile({
           ))}
         </ul>
       )}
+    </div>
+  );
+}
+
+function AvatarContainer({
+  profileName,
+  avatarURL,
+}: {
+  profileName: string;
+  avatarURL: string | null;
+}) {
+  return (
+    <div className="mb-6 flex gap-5">
+      <Avatar>
+        <AvatarImage
+          src={avatarURL ?? ""}
+          alt={`${profileName}'s avatar`}
+        ></AvatarImage>
+        <AvatarFallback>{profileName.slice(0, 2)}</AvatarFallback>
+      </Avatar>
+      <H1>{profileName}</H1>
     </div>
   );
 }
@@ -96,8 +139,6 @@ export const getStaticProps: GetStaticProps<ProfileProps> = async ({
 }) => {
   // Fetch profile data from an API or database
   const profileName = params?.profile as string;
-
-  console.log("Fetching profile data for: ", profileName);
 
   try {
     const profile = await prisma.profile.findUnique({
@@ -139,6 +180,7 @@ export const getStaticProps: GetStaticProps<ProfileProps> = async ({
         dateJoined: profile.createdAt.toISOString(),
         profileId: profile.id,
         posts: postMetaData,
+        avatarURL: profile.avatar,
       },
       revalidate: 15,
     };
