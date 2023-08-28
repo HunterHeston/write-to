@@ -7,6 +7,7 @@ export type PostMeta = {
   publishDate: string;
   visibility?: string;
   id: string;
+  avatar: string | null;
 };
 
 export enum Visibility {
@@ -19,4 +20,5 @@ export enum Visibility {
 export type FeedItem = {
   profileName: string;
   post: Post;
+  avatar: string | null;
 };

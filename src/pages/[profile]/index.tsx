@@ -171,6 +171,7 @@ export const getStaticProps: GetStaticProps<ProfileProps> = async ({
       profileName: profile.name,
       slug: post.slug,
       id: post.id,
+      avatar: profile.avatar,
     }));
 
     return {

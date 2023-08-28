@@ -68,6 +68,7 @@ export const feedRouter = createTRPCRouter({
         feedItems.push({
           post: post,
           profileName: p.name,
+          avatar: p.avatar,
         });
       }
 
@@ -76,10 +77,4 @@ export const feedRouter = createTRPCRouter({
       console.error("Failed to update post: ", e);
     }
   }),
-
-  // deletePost
-  // getPostById
-  // getPostBySlug
-
-  // getPostsByAuthor
 });
