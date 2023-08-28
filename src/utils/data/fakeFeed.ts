@@ -9,6 +9,7 @@ export async function getUserFeed(profile: string) {
       title: "My first post",
       publishDate: "2021-01-01",
       visibility: "All",
+      avatar: "https://picsum.photos/200",
     },
     {
       slug: "two",
@@ -17,6 +18,7 @@ export async function getUserFeed(profile: string) {
       title: "My second post",
       publishDate: "2021-01-02",
       visibility: "Just Me",
+      avatar: "https://picsum.photos/200",
     },
     {
       slug: "three",
@@ -25,6 +27,7 @@ export async function getUserFeed(profile: string) {
       title: "My third post",
       publishDate: "2021-01-03",
       visibility: "Approved",
+      avatar: "https://picsum.photos/200",
     },
   ];
 
