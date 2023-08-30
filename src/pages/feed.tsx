@@ -45,7 +45,6 @@ export default function Feed() {
                 profileName: post.profileName,
                 avatar: post.avatar,
               }}
-              showEdit={false}
               key={post.post.id}
             ></PostCard>
           ))}

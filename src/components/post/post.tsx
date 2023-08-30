@@ -1,24 +1,72 @@
 import Link from "next/link";
 import { Markdown } from "@/components/ui/reactMarkdown";
-import { H1 } from "@/components/ui/typography";
+import { H1, Small } from "@/components/ui/typography";
+import { Card } from "../ui/card";
+import { Button } from "../ui/button";
+import { api } from "@/utils/api";
+import { useRouter } from "next/router";
 
 type PostProps = {
   title?: string;
   publishDate?: string;
   content?: string;
   profile: string;
+  showEdit?: boolean;
 };
+
+// {
+//   showEdit && (
+//     <Link
+//       className={buttonVariants({ variant: "default", size: "sm" })}
+//       href={`do/write?pid=${postMeta.id}`}
+//     >
+//       Edit
+//     </Link>
+//   );
+// }
+// {
+//   showEdit && (
+//     <button onClick={() => deletePost(postMeta.id)}>
+//       <Trash2></Trash2>
+//     </button>
+//   );
+// }
+// {
+//   error && <p>{error.message}</p>;
+// }
 
 export default function Post({
   title,
   profile,
   content,
   publishDate,
+  showEdit = true,
 }: PostProps) {
+  const { mutate, error, status } = api.posts.deletePost.useMutation();
+  const router = useRouter();
+
+  const deletePost = (id: string) => {
+    mutate({ pid: id });
+  };
+
+  if (status === "success") {
+    router.push(`/${profile}`);
+  }
+
   return (
     <div className="flex justify-center ">
       <div className="w-full px-5 pt-16">
         <H1>{title}</H1>
+        {showEdit && (
+          <div className="my-3 flex gap-3">
+            <Button variant={"secondary"} size="sm">
+              Edit
+            </Button>
+            <Button variant={"destructive"} size="sm">
+              Delete
+            </Button>
+          </div>
+        )}
         <div className="my-5">
           <Link href={`/${profile}`}>
             By <span className="text-primary">{profile}</span>
