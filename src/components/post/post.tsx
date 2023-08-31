@@ -5,6 +5,7 @@ import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
+import DeleteButton from "./deleteButton";
 
 type PostProps = {
   title?: string;
@@ -62,9 +63,7 @@ export default function Post({
             <Button variant={"secondary"} size="sm">
               Edit
             </Button>
-            <Button variant={"destructive"} size="sm">
-              Delete
-            </Button>
+            <DeleteButton />
           </div>
         )}
         <div className="my-5">
