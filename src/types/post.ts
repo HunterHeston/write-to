@@ -5,17 +5,9 @@ export type PostMeta = {
   profileName: string;
   title: string;
   publishDate: string;
-  visibility?: string;
   id: string;
   avatar: string | null;
 };
-
-export enum Visibility {
-  All = "All",
-  Approved = "Approved",
-  JustMe = "Just Me",
-  IntoTheEther = "Into the ether",
-}
 
 export type FeedItem = {
   profileName: string;

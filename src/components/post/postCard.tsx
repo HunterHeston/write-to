@@ -41,9 +41,7 @@ export default function PostCard({
       </CardHeader>
       <CardContent className="flex gap-2">
         <Link href={`/${postMeta.profileName}/${postMeta.slug}`}>
-          <CardDescription>
-            <H3 className="text-foreground">{truncate(postMeta.title, 4)}</H3>
-          </CardDescription>
+          <H3 className="text-foreground">{truncate(postMeta.title, 4)}</H3>
         </Link>
       </CardContent>
     </Card>

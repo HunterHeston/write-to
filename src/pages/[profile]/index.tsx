@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import type { PostMeta } from "@/types/post";
 import { prisma } from "@/server/db";
-import { PostVisibility, Profile } from "@prisma/client";
+import { Profile } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { EditableBio } from "@/components/editableBio";
 import PostCard from "@/components/post/postCard";
@@ -81,7 +81,7 @@ export default function Profile({
         <ul>
           {posts.map((post) => (
             <li key={post.id} className="mb-4">
-              <PostCard postMeta={post} showEdit={userViewingOwnProfile} />
+              <PostCard postMeta={post} />
             </li>
           ))}
         </ul>
@@ -156,13 +156,15 @@ export const getStaticProps: GetStaticProps<ProfileProps> = async ({
         profile: {
           name: profileName,
         },
-        visibility: PostVisibility.PUBLIC,
       },
       select: {
         title: true,
         createdAt: true,
         id: true,
         slug: true,
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
     const postMetaData: PostMeta[] = posts.map((post) => ({

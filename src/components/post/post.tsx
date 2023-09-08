@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Markdown } from "@/components/ui/reactMarkdown";
-import { H1, Small } from "@/components/ui/typography";
-import { Card } from "../ui/card";
+import { H1 } from "@/components/ui/typography";
 import { Button } from "../ui/button";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
@@ -13,6 +12,7 @@ type PostProps = {
   content?: string;
   profile: string;
   showEdit?: boolean;
+  pid: string;
 };
 
 // {
@@ -42,6 +42,7 @@ export default function Post({
   content,
   publishDate,
   showEdit = true,
+  pid,
 }: PostProps) {
   const { mutate, error, status } = api.posts.deletePost.useMutation();
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function Post({
   };
 
   if (status === "success") {
-    router.push(`/${profile}`);
+    router.push(`/${profile}`).catch(console.error);
   }
 
   return (
@@ -63,7 +64,7 @@ export default function Post({
             <Button variant={"secondary"} size="sm">
               Edit
             </Button>
-            <DeleteButton />
+            <DeleteButton pid={pid} />
           </div>
         )}
         <div className="my-5">

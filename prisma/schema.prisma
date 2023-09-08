@@ -72,20 +72,13 @@ model VerificationToken {
 ////////////////////////
 // Application models
 ////////////////////////
-enum PostVisibility {
-  PUBLIC
-  APPROVED_FOLLOWERS
-  PRIVATE
-}
-
 model Post {
-  id         String         @id @default(cuid())
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
-  title      String
-  slug       String
-  content    String         @db.Text
-  visibility PostVisibility @default(PRIVATE)
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+  slug      String
+  content   String   @db.Text
 
   // the profile that made this post
   profile   Profile @relation(fields: [profileId], references: [id])

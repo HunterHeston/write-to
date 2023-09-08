@@ -11,7 +11,6 @@
 import type { GetStaticProps, GetStaticPaths } from "next";
 import { prisma } from "@/server/db";
 import { useRouter } from "next/router";
-import { PostVisibility } from "@prisma/client";
 import Head from "next/head";
 import Post from "@/components/post/post";
 
@@ -20,6 +19,7 @@ type Article = {
   publishDate?: string;
   content?: string;
   profile: string;
+  pid: string;
 };
 
 type Props = {
@@ -60,19 +60,20 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths: Params[] = [];
 
   try {
+    // find all profiles
     const profiles = await prisma.profile.findMany({
       select: {
         name: true,
       },
     });
 
+    // for each profile, find all posts
     for (const profile of profiles) {
       const posts = await prisma.post.findMany({
         where: {
           profile: {
             name: profile.name,
           },
-          visibility: PostVisibility.PUBLIC,
         },
         select: {
           slug: true,
@@ -107,7 +108,7 @@ export const getStaticProps: GetStaticProps<
   const { profile, slug } = params;
 
   try {
-    const post = await prisma.post.findMany({
+    const post = await prisma.post.findFirst({
       where: {
         profile: {
           name: profile,
@@ -116,17 +117,18 @@ export const getStaticProps: GetStaticProps<
       },
     });
 
-    if (post.length === 0) {
+    if (!post) {
       return { notFound: true };
     }
 
     return {
       props: {
         article: {
-          content: post[0]?.content,
-          publishDate: post[0]?.createdAt.toISOString(),
-          title: post[0]?.title,
+          content: post.content,
+          publishDate: post.createdAt.toISOString(),
+          title: post.title,
           profile: profile,
+          pid: post.id,
         },
       },
     };
