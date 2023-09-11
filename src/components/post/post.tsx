@@ -25,7 +25,7 @@ export default function Post({
   const router = useRouter();
 
   const edit = () => {
-    router.push(`/do/write?pid=${pid}`);
+    router.push(`/do/write?pid=${pid}`).catch(console.error);
   };
 
   return (
