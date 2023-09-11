@@ -3,6 +3,7 @@ import { Markdown } from "@/components/ui/reactMarkdown";
 import { H1 } from "@/components/ui/typography";
 import { Button } from "../ui/button";
 import DeleteButton from "./deleteButton";
+import { useRouter } from "next/router";
 
 type PostProps = {
   title?: string;
@@ -21,13 +22,19 @@ export default function Post({
   showEdit = true,
   pid,
 }: PostProps) {
+  const router = useRouter();
+
+  const edit = () => {
+    router.push(`/do/write?pid=${pid}`);
+  };
+
   return (
     <div className="flex justify-center ">
       <div className="w-full px-5 pt-16">
         <H1>{title}</H1>
         {showEdit && (
           <div className="my-3 flex gap-3">
-            <Button variant={"secondary"} size="sm">
+            <Button onClick={edit} variant={"secondary"} size="sm">
               Edit
             </Button>
             <DeleteButton pid={pid} profile={profile} />
