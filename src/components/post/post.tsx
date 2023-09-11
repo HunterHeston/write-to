@@ -15,27 +15,6 @@ type PostProps = {
   pid: string;
 };
 
-// {
-//   showEdit && (
-//     <Link
-//       className={buttonVariants({ variant: "default", size: "sm" })}
-//       href={`do/write?pid=${postMeta.id}`}
-//     >
-//       Edit
-//     </Link>
-//   );
-// }
-// {
-//   showEdit && (
-//     <button onClick={() => deletePost(postMeta.id)}>
-//       <Trash2></Trash2>
-//     </button>
-//   );
-// }
-// {
-//   error && <p>{error.message}</p>;
-// }
-
 export default function Post({
   title,
   profile,
@@ -44,17 +23,6 @@ export default function Post({
   showEdit = true,
   pid,
 }: PostProps) {
-  const { mutate, error, status } = api.posts.deletePost.useMutation();
-  const router = useRouter();
-
-  const deletePost = (id: string) => {
-    mutate({ pid: id });
-  };
-
-  if (status === "success") {
-    router.push(`/${profile}`).catch(console.error);
-  }
-
   return (
     <div className="flex justify-center ">
       <div className="w-full px-5 pt-16">
@@ -64,7 +32,7 @@ export default function Post({
             <Button variant={"secondary"} size="sm">
               Edit
             </Button>
-            <DeleteButton pid={pid} />
+            <DeleteButton pid={pid} profile={profile} />
           </div>
         )}
         <div className="my-5">
