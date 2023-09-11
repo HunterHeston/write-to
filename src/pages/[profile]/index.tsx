@@ -7,9 +7,9 @@
  */
 
 import { useRouter } from "next/router";
-import type { GetStaticPaths, GetStaticProps } from "next";
+import type { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
 import type { PostMeta } from "@/types/post";
-import { prisma } from "@/server/db";
+import { prisma } from "@/server/db/db";
 import { Profile } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { EditableBio } from "@/components/editableBio";
@@ -19,24 +19,13 @@ import { H1, H2 } from "@/components/ui/typography";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { daysSince } from "@/utils/dates";
 import { Cake } from "lucide-react";
+import { ProfileData, getProfileData } from "@/server/db/posts";
 
 interface ProfileProps {
-  profileName: string;
-  bio: string | null;
-  dateJoined: string;
-  posts?: PostMeta[];
-  profileId: string;
-  avatarURL: string | null;
+  profile: ProfileData;
 }
 
-export default function Profile({
-  profileName,
-  bio,
-  dateJoined,
-  posts,
-  profileId,
-  avatarURL,
-}: ProfileProps) {
+export default function Profile({ profile }: ProfileProps) {
   const router = useRouter();
   const { data } = useSession();
 
@@ -44,18 +33,21 @@ export default function Profile({
     return <div>Loading...</div>;
   }
 
-  const userViewingOwnProfile = data?.user.name === profileName;
+  const userViewingOwnProfile = data?.user.name === profile.name;
 
   return (
     <div className="flex flex-col p-5">
-      <AvatarContainer profileName={profileName} avatarURL={avatarURL} />
+      <AvatarContainer
+        profileName={profile.name}
+        avatarURL={profile.avatarURL}
+      />
       {/* profile meta data */}
       <div className="mb-4 flex h-8 items-center gap-2">
         <Cake className="inline"></Cake>
         <p className="align-middle">
           Joined{" "}
           <span className="text-primary">
-            {daysSince(new Date(dateJoined))}
+            {daysSince(new Date(profile.dateJoined))}
           </span>{" "}
           days ago
         </p>
@@ -64,22 +56,22 @@ export default function Profile({
       {/* bio */}
       <EditableBio
         className="mb-8"
-        bio={bio ?? ""}
+        bio={profile.bio ?? ""}
         canEdit={userViewingOwnProfile}
       />
       {!userViewingOwnProfile && (
-        <FollowButton profileId={profileId}></FollowButton>
+        <FollowButton profileId={profile.profileId}></FollowButton>
       )}
       <H2 className="mb-6">Posts</H2>
-      {!posts ||
-        (posts.length === 0 && (
+      {!profile.posts ||
+        (profile.posts.length === 0 && (
           <div>
             This human is working on their first post. Check back later!
           </div>
         ))}
-      {posts && (
+      {profile.posts && (
         <ul>
-          {posts.map((post) => (
+          {profile.posts.map((post) => (
             <li key={post.id} className="mb-4">
               <PostCard postMeta={post} />
             </li>
@@ -112,80 +104,25 @@ function AvatarContainer({
 }
 
 ////////////////////////////////////
-// NextJS build time functions
+// NextJS page functions
 ////////////////////////////////////
-export const getStaticPaths: GetStaticPaths = async () => {
-  try {
-    const profiles = await prisma.profile.findMany({
-      select: {
-        name: true,
-      },
-    });
-
-    // Map the profiles to an array of objects with `params` key
-    const paths = profiles.map((profile) => ({
-      params: { profile: profile.name },
-    }));
-
-    return { paths, fallback: true };
-  } catch (e) {
-    console.error("Error generating static paths: ", e);
-    throw e;
-  }
-};
-
-export const getStaticProps: GetStaticProps<ProfileProps> = async ({
+export const getServerSideProps: GetServerSideProps<ProfileProps> = async ({
   params,
 }) => {
   // Fetch profile data from an API or database
   const profileName = params?.profile as string;
 
   try {
-    const profile = await prisma.profile.findUnique({
-      where: {
-        name: profileName,
-      },
-    });
+    const profile = await getProfileData(profileName);
 
     if (!profile) {
       return { notFound: true };
     }
 
-    const posts = await prisma.post.findMany({
-      where: {
-        profile: {
-          name: profileName,
-        },
-      },
-      select: {
-        title: true,
-        createdAt: true,
-        id: true,
-        slug: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    const postMetaData: PostMeta[] = posts.map((post) => ({
-      title: post.title,
-      publishDate: post.createdAt.toISOString(),
-      profileName: profile.name,
-      slug: post.slug,
-      id: post.id,
-      avatar: profile.avatar,
-    }));
-
     return {
       props: {
-        profileName: profile.name,
-        bio: profile.bio,
-        dateJoined: profile.createdAt.toISOString(),
-        profileId: profile.id,
-        posts: postMetaData,
-        avatarURL: profile.avatar,
+        profile: profile,
       },
-      revalidate: 15,
     };
   } catch (e) {
     console.error("Error fetching profile data: ", e);

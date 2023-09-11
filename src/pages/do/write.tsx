@@ -7,7 +7,7 @@
  * 3. Allow users to publish their posts.
  */
 
-import { prisma } from "@/server/db";
+import { prisma } from "@/server/db/db";
 import { api } from "@/utils/api";
 import type { GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";

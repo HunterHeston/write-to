@@ -9,7 +9,7 @@
  */
 
 import type { GetStaticProps, GetStaticPaths } from "next";
-import { prisma } from "@/server/db";
+import { prisma } from "@/server/db/db";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Post from "@/components/post/post";
