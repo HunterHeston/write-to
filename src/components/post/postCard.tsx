@@ -1,12 +1,6 @@
 import type { PostMeta } from "@/types/post";
 import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { truncate } from "@/utils/strings";
 import { formatDate } from "@/utils/dates";

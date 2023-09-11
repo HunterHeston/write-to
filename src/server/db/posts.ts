@@ -1,5 +1,5 @@
 import { prisma } from "@/server/db/db";
-import { PostMeta } from "@/types/post";
+import type { PostMeta } from "@/types/post";
 
 export type ProfileData = {
   name: string;

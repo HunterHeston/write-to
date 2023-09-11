@@ -7,9 +7,7 @@
  */
 
 import { useRouter } from "next/router";
-import type { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
-import type { PostMeta } from "@/types/post";
-import { prisma } from "@/server/db/db";
+import type { GetServerSideProps } from "next";
 import { Profile } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { EditableBio } from "@/components/editableBio";
@@ -19,7 +17,7 @@ import { H1, H2 } from "@/components/ui/typography";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { daysSince } from "@/utils/dates";
 import { Cake } from "lucide-react";
-import { ProfileData, getProfileData } from "@/server/db/posts";
+import { type ProfileData, getProfileData } from "@/server/db/posts";
 
 interface ProfileProps {
   profile: ProfileData;
