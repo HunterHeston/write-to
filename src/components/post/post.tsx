@@ -2,8 +2,6 @@ import Link from "next/link";
 import { Markdown } from "@/components/ui/reactMarkdown";
 import { H1 } from "@/components/ui/typography";
 import { Button } from "../ui/button";
-import { api } from "@/utils/api";
-import { useRouter } from "next/router";
 import DeleteButton from "./deleteButton";
 
 type PostProps = {
