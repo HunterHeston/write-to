@@ -62,3 +62,27 @@ export async function getProfileData(
     return null;
   }
 }
+
+export async function isUserApprovedFollower(
+  userId: string,
+  profileId: string
+) {
+  // user can view their own posts
+  if (userId === profileId) {
+    return true;
+  }
+
+  try {
+    const follower = await prisma.profileFollower.findFirst({
+      where: {
+        followerId: userId,
+        followingId: profileId,
+      },
+    });
+
+    return follower !== null;
+  } catch (e) {
+    console.error("Error checking if user is approved follower: ", e);
+    return false;
+  }
+}

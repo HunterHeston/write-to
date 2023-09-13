@@ -109,6 +109,7 @@ model Profile {
   requesting FollowRequest[] @relation("RequestingRel")
 }
 
+// Contains all active approved followers.
 model ProfileFollower {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
@@ -122,6 +123,7 @@ model ProfileFollower {
   follower   Profile @relation("FollowerRel", fields: [followerId], references: [id])
 }
 
+// Contains all pending follow requests.
 model FollowRequest {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
